@@ -1,0 +1,9 @@
+<resources>
+
+    <style name="Theme.App" parent="Base.Theme.App" />
+
+    <style name="Base.V1.Theme.App" parent="Theme.AppCompat.NoActionBar" />
+
+    <style name="Base.Theme.App" parent="Base.V1.Theme.App" />
+
+</resources>

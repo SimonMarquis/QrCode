@@ -1,0 +1,47 @@
+html {
+  width:100vw;
+  overflow-x:hidden;
+}
+
+body {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+@media (min-width: 48em) {
+  .container {
+    max-width: 46rem;
+  }
+}
+
+/* Responsive image size */
+div#container {
+  padding-top: 100%; /* 1:1 Aspect Ratio */
+  position: relative;
+}
+
+/* Responsive image size */
+div#container > img {
+  border: 1px solid #000;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* Keep the canvas invisible (not required to render image) */
+div#container > canvas {
+  display: none!important;
+}
+
+/* Fake black border on textarea */
+#input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(52,58,64,.5);
+}
+
+/* Replace default active (blue) background color with neutral gray */
+.dropdown-item.active, .dropdown-item:active {
+  background-color: rgba(0,0,0,.2);
+}

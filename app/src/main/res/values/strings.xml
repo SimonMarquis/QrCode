@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">QrCode</string>
+    <string name="status_scanning">Scanning…</string>
+    <string name="status_scanning_with">Scanning with %1$s…</string>
+    <string name="copied_to_clipboard">Copied to clipboard!</string>
+    <string name="content_description_icon">Icon</string>
+    <string name="content_description_copy">Copy</string>
+    <string name="content_description_open">Open</string>
+</resources>
