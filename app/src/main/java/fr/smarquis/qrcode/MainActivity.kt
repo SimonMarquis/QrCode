@@ -57,9 +57,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUi() {
         setContentView(R.layout.activity_main)
-        progress.indeterminateDrawable?.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
+        progressBar.indeterminateDrawable?.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
 
-        bottomSheetBehavior = from(bottom_sheet)
+        bottomSheetBehavior = from(bottomSheetLinearLayout)
         bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
@@ -71,10 +71,10 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        action_open.setOnClickListener { safeStartIntent(this, holder.get()?.intent) }
-        action_copy.setOnClickListener { copyToClipboard(this, holder.get()?.value) }
+        openImageView.setOnClickListener { safeStartIntent(this, holder.get()?.intent) }
+        copyImageView.setOnClickListener { copyToClipboard(this, holder.get()?.value) }
 
-        title_textView.setOnClickListener {
+        headerLinearLayout.setOnClickListener {
             holder.get() ?: return@setOnClickListener
             bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
                 STATE_COLLAPSED -> STATE_EXPANDED
@@ -85,8 +85,8 @@ class MainActivity : AppCompatActivity() {
 
         camera = Fotoapparat(
             context = this,
-            view = findViewById<CameraView>(R.id.camera),
-            focusView = findViewById<FocusView>(R.id.focus),
+            view = findViewById<CameraView>(R.id.cameraView),
+            focusView = findViewById<FocusView>(R.id.focusView),
             logger = logcat(),
             lensPosition = back(),
             cameraConfiguration = CameraConfiguration(frameProcessor = this@MainActivity::processFrame),
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
     @UiThread
     private fun onBarcodeFound(barcode: Barcode) {
         if (!holder.update(barcode, mode)) return
-        root.playSoundEffect(SoundEffectConstants.CLICK)
+        coordinatorLayout.playSoundEffect(SoundEffectConstants.CLICK)
         render()
         if (mode == AUTO && lifecycle.currentState.isAtLeast(RESUMED)) {
             if (!safeStartIntent(this, barcode.intent)) {
@@ -142,32 +142,32 @@ class MainActivity : AppCompatActivity() {
                 bottomSheetBehavior.state = STATE_HIDDEN
             }
             barcode == null || mode == AUTO -> {
-                progress.visibility = VISIBLE
-                icon_imageView.visibility = GONE
-                icon_imageView.setImageResource(0)
-                title_textView.text = getString(R.string.status_scanning_with, decoder.internal())
-                action_open.visibility = GONE
-                action_copy.visibility = GONE
-                details_textView.visibility = GONE
-                raw_textView.visibility = GONE
+                progressBar.visibility = VISIBLE
+                iconImageView.visibility = GONE
+                iconImageView.setImageResource(0)
+                titleTextView.text = getString(R.string.status_scanning_with, decoder.internal())
+                openImageView.visibility = GONE
+                copyImageView.visibility = GONE
+                detailsTextView.visibility = GONE
+                rawTextView.visibility = GONE
                 bottomSheetBehavior.state = STATE_COLLAPSED
                 bottomSheetBehavior.isHideable = false
             }
             else -> {
-                if (bottomSheetBehavior.state == STATE_EXPANDED) TransitionManager.beginDelayedTransition(bottom_sheet)
-                progress.visibility = GONE
-                icon_imageView.setImageResource(barcode.icon)
-                icon_imageView.visibility = VISIBLE
-                title_textView.text = barcode.title
-                action_open.visibility = if (barcode.intent != null) VISIBLE else GONE
-                action_copy.visibility = VISIBLE
+                if (bottomSheetBehavior.state == STATE_EXPANDED) TransitionManager.beginDelayedTransition(bottomSheetLinearLayout)
+                progressBar.visibility = GONE
+                iconImageView.setImageResource(barcode.icon)
+                iconImageView.visibility = VISIBLE
+                titleTextView.text = barcode.title
+                openImageView.visibility = if (barcode.intent != null) VISIBLE else GONE
+                copyImageView.visibility = VISIBLE
                 barcode.details.let {
-                    details_textView.visibility = if (it.isNullOrBlank()) GONE else VISIBLE
-                    details_textView.text = it
+                    detailsTextView.visibility = if (it.isNullOrBlank()) GONE else VISIBLE
+                    detailsTextView.text = it
                 }
                 barcode.value.let {
-                    raw_textView.visibility = if (it.isBlank()) GONE else VISIBLE
-                    raw_textView.text = it
+                    rawTextView.visibility = if (it.isBlank()) GONE else VISIBLE
+                    rawTextView.text = it
                 }
                 bottomSheetBehavior.state = STATE_EXPANDED
                 bottomSheetBehavior.isHideable = false
