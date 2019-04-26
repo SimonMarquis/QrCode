@@ -8,7 +8,7 @@
 
 <br>
 
-| <a href="https://simonmarquis.github.io/QrCode/">Web</a> | <a href="https://github.com/SimonMarquis/QrCode/releases/latest">Android</a> |
+| <a href="https://simonmarquis.github.io/QrCode/">Web</a> | <a href="https://play.google.com/store/apps/details?id=fr.smarquis.qrcode">Android</a> |
 |---|---|
 | Web app to generate QR Codes:<ul><li><a href="https://github.com/davidshimjs/qrcodejs">QRCode.js</a></li><li><a href="https://zxing.appspot.com/generator/">ZXing</a></li><li><a href="https://developers.google.com/chart/infographics/docs/qr_codes">Google Charts</a></li></ul> | Android app to scan QR Codes (and many more 1D/2D barcodes):<ul><li><a href="https://firebase.google.com/docs/ml-kit/read-barcodes">Firebase ML Kit</a></li><li><a href="https://github.com/zxing/zxing/">ZXing</a></li></ul> |
 | <img src="art/web.png" width="400px" title="Web"> | <img src="art/android_scanning.png" width="220px" title="Scanning"> <img src="art/android_scanned.png" width="220px" title="Scanned"> |
