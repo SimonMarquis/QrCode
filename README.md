@@ -3,15 +3,56 @@
 </div>
 <h3 align="center">QrCode</h3>
 <p align="center">
+  Scan and create QR Codes with ease.<br>
   <img src="https://travis-ci.com/SimonMarquis/QrCode.svg?branch=master" alt="Build Status">
 </p>
 
 <br>
 
-| <a href="https://simonmarquis.github.io/QrCode/">Web</a> | <a href="https://play.google.com/store/apps/details?id=fr.smarquis.qrcode">Android</a> |
+| <a href="https://play.google.com/store/apps/details?id=fr.smarquis.qrcode">Android</a> | <a href="https://simonmarquis.github.io/QrCode/">Web</a> |
 |---|---|
-| Web app to generate QR Codes:<ul><li><a href="https://github.com/davidshimjs/qrcodejs">QRCode.js</a></li><li><a href="https://zxing.appspot.com/generator/">ZXing</a></li><li><a href="https://developers.google.com/chart/infographics/docs/qr_codes">Google Charts</a></li></ul> | Android app to scan QR Codes (and many more 1D/2D barcodes):<ul><li><a href="https://firebase.google.com/docs/ml-kit/read-barcodes">Firebase ML Kit</a></li><li><a href="https://github.com/zxing/zxing/">ZXing</a></li></ul> |
-| <img src="art/web.png" width="400px" title="Web"> | <img src="art/android_scanning.png" width="220px" title="Scanning"> <img src="art/android_scanned.png" width="220px" title="Scanned"> |
+| <img src="art/android_scanning.png" width="200px" title="Scanning"> <img src="art/android_scanned.png" width="200px" title="Scanned"> | <img src="art/web.png" width="360px" title="Web"> |
+| Barcode processors:<ul><li><a href="https://firebase.google.com/docs/ml-kit/android/read-barcodes#before-you-begin" title="Apart from the initial Firebase ML Kit Barcode Model download">✈️</a> <a href="https://firebase.google.com/docs/ml-kit/read-barcodes">Firebase ML Kit</a></li><li>✈️ <a href="https://github.com/zxing/zxing/">ZXing</a></li></ul> | QR Code generators:<ul><li>✈️ <a href="https://github.com/davidshimjs/qrcodejs">QRCode.js</a></li><li>🌎 <a href="https://zxing.appspot.com/generator/">ZXing</a></li><li>🌎 <a href="https://developers.google.com/chart/infographics/docs/qr_codes">Google Charts</a></li></ul> |
+
+#### Devices without touchscreen
+
+> Mostly based on [android.hardware.touchscreen](https://developer.android.com/reference/android/content/pm/PackageManager.html#hasSystemFeature(java.lang.String))
+
+The scanning behavior is simplified and it will automatically:
+- Copy content to clipboard
+- Open web links
+- Open deeplinks (geo, mail, tel, sms, etc.)
+
+Non-exhaustive list of devices without touch screen support:
+- Google: `Glass`, `Glass Enterprise Edition`
+- Vuzix: `Blade®`, `M300`, `M300XL`
+- Realwear: `HMT-1™`, `HMT-1Z1™`
+- …
+
+#### Supported barcode formats
+
+- Aztec
+- Codabar
+- Code 39, Code 93, Code 128
+- Data Matrix
+- EAN-8, EAN-13
+- ITF
+- MaxiCode
+- PDF417
+- QR Code
+- UPC-A, UPC-E
+
+#### Supported content types
+
+- Text
+- WiFi
+- Url
+- Sms
+- GeoPoint
+- ContactInfo
+- Email
+- Phone
+- CalendarEvent
 
 ## License
 
