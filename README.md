@@ -29,7 +29,7 @@ Non-exhaustive list of devices without touch screen support:
 - Realwear: `HMT-1™`, `HMT-1Z1™`
 - …
 
-#### Supported barcode formats
+#### Barcode formats
 
 - Aztec
 - Codabar
@@ -42,7 +42,7 @@ Non-exhaustive list of devices without touch screen support:
 - QR Code
 - UPC-A, UPC-E
 
-#### Supported content types
+#### Content types
 
 - Text
 - WiFi
