@@ -1,6 +1,5 @@
 package fr.smarquis.qrcode
 
-import android.app.Application
 import android.content.Context
 import android.graphics.Rect
 import android.os.SystemClock
@@ -22,25 +21,10 @@ import com.google.zxing.multi.GenericMultipleBarcodeReader
 import io.fotoapparat.preview.Frame
 import java.lang.Math.pow
 import java.lang.Math.sqrt
-import java.util.concurrent.atomic.AtomicReference
 
-class Decoder private constructor(application: Application) {
+sealed class Decoder {
 
-    private val isGooglePlayServicesAvailable: Boolean
-    private val reference: AtomicReference<Internal>
-
-    init {
-        checkGooglePlayServices(application)
-        isGooglePlayServicesAvailable = isGooglePlayServicesAvailable(application)
-        val decoder = when (isGooglePlayServicesAvailable) {
-            true -> Internal.MLKit
-            false -> Internal.ZXing
-        }
-        reference = AtomicReference(decoder)
-        logInternal()
-    }
-
-    companion object : Singleton<Decoder, Application>(::Decoder) {
+    companion object {
 
         private fun centerX(frame: Frame): Double {
             return when (frame.rotation) {
@@ -74,111 +58,89 @@ class Decoder private constructor(application: Application) {
 
     }
 
-    fun internal(): Internal = reference.get()
+    abstract fun name(): String
 
     @Throws(java.lang.Exception::class)
     @WorkerThread
-    fun decode(context: Context, frame: Frame): Barcode? {
-        try {
-            return reference.get().decode(context, frame)
-        } catch (e: Exception) {
-            fallback()
-            throw e
-        }
-    }
+    abstract fun decode(context: Context, frame: Frame): Barcode?
 
-    fun toggle(): Boolean {
-        val decoder = when (reference.get()) {
-            is Internal.MLKit -> Internal.ZXing
-            is Internal.ZXing -> if (isGooglePlayServicesAvailable) Internal.MLKit else return false
-        }
-        reference.set(decoder)
-        logInternal()
-        return true
-    }
+    object MLKit : Decoder() {
 
-    private fun fallback(): Boolean {
-        val fallback = Internal.ZXing
-        if (!reference.compareAndSet(Internal.MLKit, fallback)) return false
-        logInternal()
-        return true
-    }
+        var isAvailable: Boolean = true
 
-    private fun logInternal() {
-        Log.d(TAG, "Process frames with [${internal()}]")
-    }
+        override fun name(): String = "ML Kit"
 
-    sealed class Internal {
-
-        @Throws(java.lang.Exception::class)
-        @WorkerThread
-        abstract fun decode(context: Context, frame: Frame): Barcode?
-
-        object MLKit : Internal() {
-
-            private val detector: FirebaseVisionBarcodeDetector by lazy {
-                val instance = FirebaseVision.getInstance()
-                instance.isStatsCollectionEnabled = false
-                instance.getVisionBarcodeDetector(
-                    FirebaseVisionBarcodeDetectorOptions.Builder()
-                        .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_ALL_FORMATS)
-                        .build()
-                )
-            }
-
-            override fun decode(context: Context, frame: Frame): Barcode? {
-                val start = SystemClock.elapsedRealtime()
-                val metadata = FirebaseVisionImageMetadata.Builder()
-                    .setWidth(frame.size.width)
-                    .setHeight(frame.size.height)
-                    .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
-                    .setRotation(
-                        when (frame.rotation) {
-                            90 -> FirebaseVisionImageMetadata.ROTATION_90
-                            180 -> FirebaseVisionImageMetadata.ROTATION_180
-                            270 -> FirebaseVisionImageMetadata.ROTATION_270
-                            else -> FirebaseVisionImageMetadata.ROTATION_0
-                        }
-                    )
+        private val detector: FirebaseVisionBarcodeDetector by lazy {
+            val instance = FirebaseVision.getInstance()
+            instance.isStatsCollectionEnabled = false
+            instance.getVisionBarcodeDetector(
+                FirebaseVisionBarcodeDetectorOptions.Builder()
+                    .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_ALL_FORMATS)
                     .build()
-                val task = detector.detectInImage(FirebaseVisionImage.fromByteArray(frame.image, metadata))
-                val results = Tasks.await(task)
-                val vision = results.minBy {
-                    distance(frame, it.boundingBox ?: return@minBy Double.MAX_VALUE)
-                } ?: return null
-                Log.d(TAG, "Found ${results.size} by $this in ${SystemClock.elapsedRealtime() - start}ms")
-                return Barcode.parse(context, vision)
-            }
-
-            override fun toString(): String = "ML Kit"
+            )
         }
 
-        object ZXing : Internal() {
+        override fun decode(context: Context, frame: Frame): Barcode? {
+            val start = SystemClock.elapsedRealtime()
+            val metadata = FirebaseVisionImageMetadata.Builder()
+                .setWidth(frame.size.width)
+                .setHeight(frame.size.height)
+                .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
+                .setRotation(
+                    when (frame.rotation) {
+                        90 -> FirebaseVisionImageMetadata.ROTATION_90
+                        180 -> FirebaseVisionImageMetadata.ROTATION_180
+                        270 -> FirebaseVisionImageMetadata.ROTATION_270
+                        else -> FirebaseVisionImageMetadata.ROTATION_0
+                    }
+                )
+                .build()
+            val task = detector.detectInImage(
+                FirebaseVisionImage.fromByteArray(
+                    frame.image,
+                    metadata
+                )
+            )
+            val results = Tasks.await(task)
+            val vision = results.minBy {
+                distance(frame, it.boundingBox ?: return@minBy Double.MAX_VALUE)
+            } ?: return null
+            val elapsed = SystemClock.elapsedRealtime() - start
+            Log.d(TAG, "Found ${results.size} by ${this.name()} in ${elapsed}ms")
+            return Barcode.parse(context, vision)
+        }
+    }
 
-            private val multiReader = GenericMultipleBarcodeReader(MultiFormatReader())
+    object ZXing : Decoder() {
 
-            override fun decode(context: Context, frame: Frame): Barcode? {
-                val start = SystemClock.elapsedRealtime()
-                val width = frame.size.width
-                val height = frame.size.height
-                val source = PlanarYUVLuminanceSource(frame.image, width, height, 0, 0, width, height, false)
-                val bitmap = BinaryBitmap(HybridBinarizer(source))
+        private val multiReader =
+            GenericMultipleBarcodeReader(MultiFormatReader())
 
-                try {
-                    val results = multiReader.decodeMultiple(bitmap)
-                    val result = results.minBy {
-                        distance(frame, it.resultPoints ?: return@minBy Double.MAX_VALUE)
-                    } ?: return null
-                    Log.d(TAG, "Found ${results.size} by $this in ${SystemClock.elapsedRealtime() - start}ms")
-                    return Barcode.parse(context, result)
-                } catch (e: Exception) {
-                }
-                return null
+        override fun name(): String = "ZXing"
+
+        override fun decode(context: Context, frame: Frame): Barcode? {
+            val start = SystemClock.elapsedRealtime()
+            val width = frame.size.width
+            val height = frame.size.height
+            val source =
+                PlanarYUVLuminanceSource(frame.image, width, height, 0, 0, width, height, false)
+            val bitmap = BinaryBitmap(HybridBinarizer(source))
+
+            try {
+                val results = multiReader.decodeMultiple(bitmap)
+                val result = results.minBy {
+                    distance(frame, it.resultPoints ?: return@minBy Double.MAX_VALUE)
+                } ?: return null
+                val elapsed = SystemClock.elapsedRealtime() - start
+                Log.d(TAG, "Found ${results.size} by ${this.name()} in ${elapsed}ms")
+                return Barcode.parse(context, result)
+            } catch (e: Exception) {
+                // Safe to ignore
+                // Empty result is reported as an Exception
             }
-
-            override fun toString(): String = "ZXing"
-
+            return null
         }
 
     }
+
 }

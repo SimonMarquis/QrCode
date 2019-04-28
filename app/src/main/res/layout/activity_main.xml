@@ -28,7 +28,7 @@
         android:background="@drawable/bottom_sheet_background"
         android:clipChildren="false"
         android:orientation="vertical"
-        android:theme="@style/Base.ThemeOverlay.AppCompat.Light"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
         app:behavior_peekHeight="@dimen/bottom_sheet_peek_height"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
@@ -96,6 +96,15 @@
                 android:src="@drawable/ic_open_in_new_black_24dp"
                 android:visibility="gone"
                 tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/moreImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/content_description_more"
+                android:padding="@dimen/material_unit_1"
+                android:src="@drawable/ic_more_vert_black_24dp" />
 
         </LinearLayout>
 

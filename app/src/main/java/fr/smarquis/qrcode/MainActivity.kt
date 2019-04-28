@@ -9,7 +9,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
-import android.view.KeyEvent
+import android.view.ContextThemeWrapper
+import android.view.Gravity
 import android.view.SoundEffectConstants
 import android.view.View
 import android.view.View.GONE
@@ -18,6 +19,7 @@ import android.widget.Toast
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat.checkSelfPermission
@@ -26,6 +28,7 @@ import androidx.transition.TransitionManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import fr.smarquis.qrcode.Mode.AUTO
+import fr.smarquis.qrcode.Mode.MANUAL
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.configuration.CameraConfiguration
 import io.fotoapparat.log.logcat
@@ -43,9 +46,9 @@ class MainActivity : AppCompatActivity() {
         private const val REQUEST_CODE_PERMISSION_SETTINGS = 4321
     }
 
-    private val mode: Mode by lazy { Mode.instance(application) }
-    private val decoder: Decoder by lazy { Decoder.instance(application) }
-    private val holder: Holder by lazy { Holder.instance(application) }
+    private val mode: ModeHolder by lazy { ModeHolder.instance(application) }
+    private val decoder: DecoderHolder by lazy { DecoderHolder.instance(application) }
+    private val barcode: BarcodeHolder by lazy { BarcodeHolder.instance(application) }
 
     private lateinit var camera: Fotoapparat
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<out View>
@@ -65,17 +68,46 @@ class MainActivity : AppCompatActivity() {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == STATE_COLLAPSED) {
-                    holder.update(null, mode)
+                    barcode.update(null, mode.get())
                     render()
                 }
             }
         })
 
-        openImageView.setOnClickListener { safeStartIntent(this, holder.get()?.intent) }
-        copyImageView.setOnClickListener { copyToClipboard(this, holder.get()?.value) }
+        val applySettingsState = { popup: PopupMenu ->
+            popup.menu.apply {
+                findItem(R.id.menu_item_scanner_mlkit).isEnabled = Decoder.MLKit.isAvailable
+                when (decoder.get()) {
+                    Decoder.MLKit -> findItem(R.id.menu_item_scanner_mlkit).isChecked = true
+                    Decoder.ZXing -> findItem(R.id.menu_item_scanner_zxing).isChecked = true
+                }
+                when (mode.get()) {
+                    AUTO -> findItem(R.id.menu_item_mode_auto).isChecked = true
+                    MANUAL -> findItem(R.id.menu_item_mode_manual).isChecked = true
+                }
+            }
+        }
+        val settings = PopupMenu(ContextThemeWrapper(this, R.style.PopupMenu), moreImageView, Gravity.END)
+        settings.inflate(R.menu.menu_main)
+        settings.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_item_scanner_mlkit -> decoder.set(Decoder.MLKit)
+                R.id.menu_item_scanner_zxing -> decoder.set(Decoder.ZXing)
+                R.id.menu_item_mode_auto -> mode.set(AUTO)
+                R.id.menu_item_mode_manual -> mode.set(MANUAL)
+                else -> true
+            }.also { applySettingsState(settings) }
+        }
+        moreImageView.setOnClickListener {
+            applySettingsState(settings)
+            settings.show()
+        }
+
+        openImageView.setOnClickListener { safeStartIntent(this, barcode.get()?.intent) }
+        copyImageView.setOnClickListener { copyToClipboard(this, barcode.get()?.value) }
 
         headerLinearLayout.setOnClickListener {
-            holder.get() ?: return@setOnClickListener
+            barcode.get() ?: return@setOnClickListener
             bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
                 STATE_COLLAPSED -> STATE_EXPANDED
                 STATE_EXPANDED -> STATE_COLLAPSED
@@ -99,7 +131,7 @@ class MainActivity : AppCompatActivity() {
     @WorkerThread
     private fun processFrame(frame: Frame) {
         try {
-            val barcode = decoder.decode(this, frame) ?: return
+            val barcode = decoder.process(this, frame) ?: return
             runOnUiThread { onBarcodeFound(barcode) }
         } catch (e: Exception) {
             Log.e(TAG, "processFrame()", e)
@@ -115,7 +147,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             else /*STATE_COLLAPSED, STATE_HIDDEN*/ -> {
-                holder.update(null, mode).also {
+                barcode.update(null, mode.get()).also {
                     render()
                 }
             }
@@ -123,29 +155,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     @UiThread
-    private fun onBarcodeFound(barcode: Barcode) {
-        if (!holder.update(barcode, mode)) return
+    private fun onBarcodeFound(found: Barcode) {
+        if (!barcode.update(found, mode.get())) return
         coordinatorLayout.playSoundEffect(SoundEffectConstants.CLICK)
         render()
-        if (mode == AUTO && lifecycle.currentState.isAtLeast(RESUMED)) {
-            if (!safeStartIntent(this, barcode.intent)) {
-                copyToClipboard(this, barcode.value)
+        if (mode.get() == AUTO && lifecycle.currentState.isAtLeast(RESUMED)) {
+            if (!safeStartIntent(this, found.intent)) {
+                copyToClipboard(this, found.value)
             }
         }
     }
 
     @UiThread
-    private fun render(barcode: Barcode? = holder.get()) {
+    private fun render(render: Barcode? = barcode.get()) {
         when {
             !hasCameraPermission() -> {
                 bottomSheetBehavior.isHideable = true
                 bottomSheetBehavior.state = STATE_HIDDEN
             }
-            barcode == null || mode == AUTO -> {
+            render == null || mode.get() == AUTO -> {
                 progressBar.visibility = VISIBLE
                 iconImageView.visibility = GONE
                 iconImageView.setImageResource(0)
-                titleTextView.text = getString(R.string.status_scanning_with, decoder.internal())
+                titleTextView.setText(R.string.status_scanning)
                 openImageView.visibility = GONE
                 copyImageView.visibility = GONE
                 detailsTextView.visibility = GONE
@@ -154,18 +186,20 @@ class MainActivity : AppCompatActivity() {
                 bottomSheetBehavior.isHideable = false
             }
             else -> {
-                if (bottomSheetBehavior.state == STATE_EXPANDED) TransitionManager.beginDelayedTransition(bottomSheetLinearLayout)
+                if (bottomSheetBehavior.state == STATE_EXPANDED) TransitionManager.beginDelayedTransition(
+                    bottomSheetLinearLayout
+                )
                 progressBar.visibility = GONE
-                iconImageView.setImageResource(barcode.icon)
+                iconImageView.setImageResource(render.icon)
                 iconImageView.visibility = VISIBLE
-                titleTextView.text = barcode.title
-                openImageView.visibility = if (barcode.intent != null) VISIBLE else GONE
+                titleTextView.text = render.title
+                openImageView.visibility = if (render.intent != null) VISIBLE else GONE
                 copyImageView.visibility = VISIBLE
-                barcode.details.let {
+                render.details.let {
                     detailsTextView.visibility = if (it.isNullOrBlank()) GONE else VISIBLE
                     detailsTextView.text = it
                 }
-                barcode.value.let {
+                render.value.let {
                     rawTextView.visibility = if (it.isBlank()) GONE else VISIBLE
                     rawTextView.text = it
                 }
@@ -186,8 +220,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPostResume() {
         super.onPostResume()
-        if (mode == AUTO) {
-            holder.update(null, mode)
+        if (mode.get() == AUTO) {
+            barcode.update(null, mode.get())
         }
     }
 
@@ -226,11 +260,6 @@ class MainActivity : AppCompatActivity() {
         if (!hasCameraPermission()) {
             requestCameraPermission()
         }
-    }
-
-    override fun onKeyLongPress(keyCode: Int, event: KeyEvent?): Boolean = when {
-        keyCode == KeyEvent.KEYCODE_BACK && decoder.toggle() -> reset()
-        else -> super.onKeyLongPress(keyCode, event)
     }
 
     override fun onBackPressed() {

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_item_scanner"
+        android:title="@string/menu_item_scanner">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/menu_item_scanner_mlkit"
+                    android:title="@string/menu_item_scanner_mlkit" />
+                <item
+                    android:id="@+id/menu_item_scanner_zxing"
+                    android:title="@string/menu_item_scanner_zxing" />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/menu_item_mode"
+        android:title="@string/menu_item_mode">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/menu_item_mode_manual"
+                    android:title="@string/menu_item_mode_manual" />
+                <item
+                    android:id="@+id/menu_item_mode_auto"
+                    android:title="@string/menu_item_mode_auto" />
+            </group>
+        </menu>
+    </item>
+</menu>
