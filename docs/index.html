@@ -3,20 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="QR Code generator">
   <meta name="author" content="contact@simon-marquis.fr">
+  <meta name="theme-color" content="#000000">
 
   <title>QrCode</title>
 
+  <link rel="manifest" href="manifest.json">
   <link href="favicon.ico" rel="icon" type="image/x-icon" />
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <link rel="icon" sizes="192x192" href="192.png">
+  <script defer src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script defer type="text/javascript" src="qrcode.js"></script>
-  <script defer type="text/javascript" src="app.js"></script>
-  <link defer href="app.css" rel="stylesheet">
+  <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script defer src="qrcode.js"></script>
+  <script defer src="app.js"></script>
+  <link href="app.css" rel="stylesheet">
 </head>
 
 <body>
@@ -24,24 +27,24 @@
       <div class="card bg-light shadow">
           <div class="card-body">
               <div class="input-group">
-                  <textarea id="input" class="form-control form-control-lg border border-dark" rows="1" spellcheck="false" style="word-break: break-all; resize: vertical; min-height: min-content;"></textarea>
+                  <textarea id="input" class="form-control form-control-lg border border-dark" rows="1" spellcheck="false" placeholder="…" aria-label="Text input"></textarea>
                   <div class="input-group-append">
-                      <button class="btn btn-outline-dark" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">🔧</button>
+                      <button class="btn btn-outline-dark rounded-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">⚙️</button>
                       <div class="dropdown-menu">
                           <h6 class="dropdown-header">Error correction level</h6>
                           <a class="dropdown-item" data-correction-level="L" href=""><b>L</b> <small>(Low ~ 7%)</small></a>
                           <a class="dropdown-item" data-correction-level="M" href=""><b>M</b> <small>(Medium ~ 15%)</small></a>
                           <a class="dropdown-item" data-correction-level="Q" href=""><b>Q</b> <small>(Quartile ~ 25%)</small></a>
                           <a class="dropdown-item" data-correction-level="H" href=""><b>H</b> <small>(High ~ 30%)</small></a>
-                      </div>
-                  </div>
-                  <div class="input-group-append">
-                      <button class="btn btn-outline-dark rounded-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">⚙️</button>
-                      <div class="dropdown-menu">
+                          <div class="dropdown-divider"></div>
                           <h6 class="dropdown-header">QrCode generator</h6>
-                          <a data-generator="local" id="export-local" class="dropdown-item" href="">Local <span title="Documentation" data-generator-url="https://github.com/davidshimjs/qrcodejs">📋</span></a>
-                          <a data-generator="zxing" id="export-zxing" class="dropdown-item" href="">ZXing <span title="Documentation" data-generator-url="https://zxing.appspot.com/generator/">📋</span></a>
-                          <a data-generator="google" id="export-google-charts" class="dropdown-item" href="">Google Charts <span title="Documentation" data-generator-url="https://developers.google.com/chart/infographics/docs/qr_codes">📋</span></a>
+                          <a data-generator="local" id="export-local" class="dropdown-item" href="">Local <span class="float-right" title="Documentation" data-generator-url="https://github.com/davidshimjs/qrcodejs">📋</span></a>
+                          <a data-generator="zxing" id="export-zxing" class="dropdown-item" href="">ZXing <span class="float-right" title="Documentation" data-generator-url="https://zxing.appspot.com/generator/">📋</span></a>
+                          <a data-generator="google" id="export-google-charts" class="dropdown-item" href="">Google Charts <span class="float-right" title="Documentation" data-generator-url="https://developers.google.com/chart/infographics/docs/qr_codes">📋</span></a>
+                          <div id="pwa" hidden>
+                            <div class="dropdown-divider"></div>
+                            <a id="pwa-install" class="dropdown-item" href="">Install PWA</a>
+                          </div>
                       </div>
                   </div>
               </div> <!-- input-group -->

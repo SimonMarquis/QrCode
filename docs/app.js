@@ -12,6 +12,7 @@ window.onload = function() {
 
 function App() {
   this.initServiceWorker();
+  this.initPWA();
   this.initElements();
   this.initGenerators();
   this.initCorrectionLevels();
@@ -34,6 +35,32 @@ App.prototype.initServiceWorker = function() {
   }
 
   window.addEventListener("online", this.renderQrCode.bind(this));
+};
+
+App.prototype.initPWA = function() {
+  window.addEventListener(
+    "beforeinstallprompt",
+    this.beforeInstallPrompt.bind(this)
+  );
+  document
+    .getElementById("pwa-install")
+    .addEventListener("click", this.promptPWA.bind(this), false);
+};
+
+App.prototype.beforeInstallPrompt = function(event) {
+  event.preventDefault();
+  this.PWA = event;
+  document.getElementById("pwa").removeAttribute("hidden");
+};
+
+App.prototype.promptPWA = function(event) {
+  this.PWA.prompt();
+  this.PWA.userChoice.then(function(result) {
+    console.log("PWA result:", result);
+    document.getElementById("pwa").setAttribute("hidden", "true");
+  });
+  event.preventDefault();
+  event.stopPropagation();
 };
 
 App.prototype.initElements = function() {
@@ -77,6 +104,7 @@ App.prototype.selectGenerator = function(generator, event) {
   this.renderGenerators();
   this.renewQrCode();
   event.preventDefault();
+  event.stopPropagation();
 };
 
 App.prototype.renderGenerators = function() {
@@ -220,6 +248,7 @@ App.prototype.selectCorrectionLevel = function(level, event) {
   this.renderCorrectionLevels();
   this.renewQrCode();
   event.preventDefault();
+  event.stopPropagation();
 };
 
 App.prototype.renderCorrectionLevels = function() {

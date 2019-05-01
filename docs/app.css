@@ -36,6 +36,13 @@ div#container > canvas {
   display: none!important;
 }
 
+/* Styling of textarea */
+#input {
+  word-break: break-all;
+  resize: vertical;
+  min-height: min-content;
+}
+
 /* Fake black border on textarea */
 #input:focus {
   box-shadow: 0 0 0 0.2rem rgba(52,58,64,.5);
