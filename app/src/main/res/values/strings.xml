@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">QrCode</string>
+    <string name="webapp">"https://simonmarquis.github.io/QrCode/"</string>
     <string name="status_scanning">Scanning…</string>
     <string name="copied_to_clipboard">Copied to clipboard!</string>
     <string name="content_description_icon">Icon</string>
@@ -12,4 +13,5 @@
     <string name="menu_item_mode">⚡ Behavior</string>
     <string name="menu_item_mode_manual">👉 Manual</string>
     <string name="menu_item_mode_auto">🤖 Automatic</string>
+    <string name="menu_item_generator">✏️ Generator</string>
 </resources>

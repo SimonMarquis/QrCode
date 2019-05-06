@@ -28,4 +28,7 @@
             </group>
         </menu>
     </item>
+    <item
+        android:id="@+id/menu_item_generator"
+        android:title="@string/menu_item_generator" />
 </menu>

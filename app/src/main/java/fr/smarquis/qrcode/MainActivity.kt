@@ -20,9 +20,11 @@ import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle.State.RESUMED
 import androidx.transition.TransitionManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val REQUEST_CODE_CAMERA_PERMISSION = 1234
         private const val REQUEST_CODE_PERMISSION_SETTINGS = 4321
+        private val CUSTOM_TABS_INTENT = CustomTabsIntent.Builder().setToolbarColor(Color.BLACK).build()
     }
 
     private val mode: ModeHolder by lazy { ModeHolder.instance(application) }
@@ -95,6 +98,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_item_scanner_zxing -> decoder.set(Decoder.ZXing)
                 R.id.menu_item_mode_auto -> mode.set(AUTO)
                 R.id.menu_item_mode_manual -> mode.set(MANUAL)
+                R.id.menu_item_generator -> CUSTOM_TABS_INTENT.launchUrl(this, getString(R.string.webapp).toUri()).run { true }
                 else -> true
             }.also { applySettingsState(settings) }
         }
