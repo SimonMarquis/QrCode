@@ -39,13 +39,8 @@ App.prototype.initServiceWorker = function() {
 };
 
 App.prototype.initPWA = function() {
-  window.addEventListener(
-    "beforeinstallprompt",
-    this.beforeInstallPrompt.bind(this)
-  );
-  document
-    .getElementById("pwa-install")
-    .addEventListener("click", this.promptPWA.bind(this), false);
+  window.addEventListener("beforeinstallprompt", this.beforeInstallPrompt.bind(this));
+  document.getElementById("pwa-install").addEventListener("click", this.promptPWA.bind(this), false);
 };
 
 App.prototype.beforeInstallPrompt = function(event) {
@@ -74,11 +69,7 @@ App.prototype.initGenerators = function() {
   for (let i = 0; i < generators.length; i++) {
     const generator = generators[i];
     const value = generator.getAttribute("data-generator");
-    generator.addEventListener(
-      "click",
-      this.selectGenerator.bind(this, value),
-      false
-    );
+    generator.addEventListener("click", this.selectGenerator.bind(this, value), false);
   }
 
   const docs = document.querySelectorAll("[data-generator-url]");
@@ -127,9 +118,7 @@ App.prototype.setGenerator = function(generator) {
 
 App.prototype.getGenerator = function() {
   const generator = localStorage.getItem("generator");
-  return App.QRCODE_GENERATORS.includes(generator)
-    ? generator
-    : App.DEFAULT_QRCODE_GENERATOR;
+  return App.QRCODE_GENERATORS.includes(generator) ? generator : App.DEFAULT_QRCODE_GENERATOR;
 };
 
 App.prototype.renderQrCode = function() {
@@ -228,11 +217,7 @@ App.prototype.initCorrectionLevels = function() {
   for (let i = 0; i < levels.length; i++) {
     const level = levels[i];
     const value = level.getAttribute("data-correction-level");
-    level.addEventListener(
-      "click",
-      this.selectCorrectionLevel.bind(this, value),
-      false
-    );
+    level.addEventListener("click", this.selectCorrectionLevel.bind(this, value), false);
   }
   this.renderCorrectionLevels();
 };
@@ -265,9 +250,7 @@ App.prototype.setCorrectionLevel = function(level) {
 
 App.prototype.getCorrectionLevel = function() {
   const level = localStorage.getItem("correction-level");
-  return App.ERROR_CORRECTION_LEVELS.includes(level)
-    ? level
-    : App.DEFAULT_ERROR_CORRECTION_LEVEL;
+  return App.ERROR_CORRECTION_LEVELS.includes(level) ? level : App.DEFAULT_ERROR_CORRECTION_LEVEL;
 };
 
 App.prototype.parseCorrectionLevel = function(raw) {
