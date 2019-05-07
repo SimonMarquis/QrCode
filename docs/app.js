@@ -140,7 +140,7 @@ App.prototype.renderQrCode = function() {
   this.container.setAttribute("title", data);
   switch (this.getGenerator()) {
     case "local":
-      const local =
+      this.qrcode =
         this.qrcode ||
         new QRCode(this.container, {
           width: 1024,
@@ -148,7 +148,7 @@ App.prototype.renderQrCode = function() {
           correctLevel: this.parseCorrectionLevel(correction)
         });
       try {
-        local.makeCode(data);
+        this.qrcode.makeCode(data);
         this.renderState(true);
       } catch (error) {
         this.renderState(false);
