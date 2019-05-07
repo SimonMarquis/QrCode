@@ -17,6 +17,7 @@ function App() {
   this.initGenerators();
   this.initCorrectionLevels();
   this.initInput();
+  window.onhashchange();
 }
 
 App.prototype.initServiceWorker = function() {
@@ -212,20 +213,14 @@ App.prototype.initInput = function() {
 
   window.onhashchange = function() {
     this.input.value = decodeURIComponent(window.location.hash.substr(1));
-    this.input.dispatchEvent(
-      new Event("input", {
-        bubbles: true
-      })
-    );
-  };
-  window.onhashchange();
+    this.renderQrCode();
+  }.bind(this);
 };
 
 App.prototype.onInputChange = function(event) {
   const data = this.input.value;
   this.input.setAttribute("rows", (data.match(/\n/g) || []).length + 1);
   document.location.hash = encodeURIComponent(data);
-  this.renderQrCode();
 };
 
 App.prototype.initCorrectionLevels = function() {
