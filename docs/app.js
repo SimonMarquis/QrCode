@@ -6,14 +6,17 @@ App.DEFAULT_QRCODE_GENERATOR = "local";
 App.ERROR_CORRECTION_LEVELS = ["L", "M", "Q", "H"];
 App.DEFAULT_ERROR_CORRECTION_LEVEL = "M";
 
+App.LOCAL_STORAGE_GENERATOR = "generator";
+App.LOCAL_STORAGE_CORRECTION_LEVEL = "correction-level";
+
 window.onload = function() {
   window.app = new App();
 };
 
 function App() {
+  this.initElements();
   this.initServiceWorker();
   this.initPWA();
-  this.initElements();
   this.initGenerators();
   this.initCorrectionLevels();
   this.initInput();
@@ -46,14 +49,14 @@ App.prototype.initPWA = function() {
 App.prototype.beforeInstallPrompt = function(event) {
   event.preventDefault();
   this.PWA = event;
-  document.getElementById("pwa").removeAttribute("hidden");
+  Utils.show(document.getElementById("pwa"));
 };
 
 App.prototype.promptPWA = function(event) {
   this.PWA.prompt();
   this.PWA.userChoice.then(function(result) {
     console.log("PWA result:", result);
-    document.getElementById("pwa").setAttribute("hidden", "true");
+    Utils.hide(document.getElementById("pwa"));
   });
   event.preventDefault();
   event.stopPropagation();
@@ -113,11 +116,11 @@ App.prototype.renderGenerators = function() {
 };
 
 App.prototype.setGenerator = function(generator) {
-  localStorage.setItem("generator", generator);
+  localStorage.setItem(App.LOCAL_STORAGE_GENERATOR, generator);
 };
 
 App.prototype.getGenerator = function() {
-  const generator = localStorage.getItem("generator");
+  const generator = localStorage.getItem(App.LOCAL_STORAGE_GENERATOR);
   return App.QRCODE_GENERATORS.includes(generator) ? generator : App.DEFAULT_QRCODE_GENERATOR;
 };
 
@@ -245,11 +248,11 @@ App.prototype.renderCorrectionLevels = function() {
 };
 
 App.prototype.setCorrectionLevel = function(level) {
-  localStorage.setItem("correction-level", level);
+  localStorage.setItem(App.LOCAL_STORAGE_CORRECTION_LEVEL, level);
 };
 
 App.prototype.getCorrectionLevel = function() {
-  const level = localStorage.getItem("correction-level");
+  const level = localStorage.getItem(App.LOCAL_STORAGE_CORRECTION_LEVEL);
   return App.ERROR_CORRECTION_LEVELS.includes(level) ? level : App.DEFAULT_ERROR_CORRECTION_LEVEL;
 };
 
@@ -266,4 +269,26 @@ App.prototype.parseCorrectionLevel = function(raw) {
     default:
       return QRCode.CorrectLevel.M;
   }
+};
+
+function Utils() {}
+
+Utils.inflate = function(template) {
+  return document.importNode(template.content, true);
+};
+
+Utils.show = function(element) {
+  element && element.removeAttribute("hidden");
+};
+
+Utils.hide = function(element) {
+  element && element.setAttribute("hidden", "true");
+};
+
+Utils.isHidden = function(element) {
+  return element && element.hasAttribute("hidden");
+};
+
+Utils.remove = function(element) {
+  element && element.parentNode && element.parentNode.removeChild(element);
 };
