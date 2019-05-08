@@ -103,7 +103,7 @@ App.prototype.addFavorite = function(favorite) {
 };
 
 App.prototype.addFavoriteNode = function(favorite) {
-  const item = Utils.inflate(this.favoriteTemplate).firstElementChild;
+  const item = Utils.inflate(this.favoriteTemplate);
   const span = item.querySelector("[favorite-item]");
   span.textContent = favorite;
   span.setAttribute("favorite-item", favorite);
@@ -180,7 +180,6 @@ App.prototype.initGenerators = function() {
 };
 
 App.prototype.selectGenerator = function(generator, event) {
-  console.log(`selectGenerator(${generator})`);
   this.setGenerator(generator);
   this.renderGenerators();
   this.renewQrCode();
@@ -207,7 +206,7 @@ App.prototype.setGenerator = function(generator) {
 
 App.prototype.getGenerator = function() {
   const generator = localStorage.getItem(App.LOCAL_STORAGE_GENERATOR);
-  return App.QRCODE_GENERATORS.includes(generator) ? generator : App.DEFAULT_QRCODE_GENERATOR;
+  return App.QRCODE_GENERATORS.indexOf(generator) !== -1 ? generator : App.DEFAULT_QRCODE_GENERATOR;
 };
 
 App.prototype.renderQrCode = function() {
@@ -233,13 +232,13 @@ App.prototype.renderQrCode = function() {
       }
       break;
     case "google":
-      const size = Math.min(512, this.container.clientWidth); // Max 300000px² ~ 512
+      const size = Math.min(512, containerSize); // Max 300000px² ~ 512
       const google = this.createSafeImage();
-      google.src = `https://chart.apis.google.com/chart?cht=qr&chs=${size}x${size}&chld=${correction}|0&choe=UTF-8&chl=${encodedData}`;
+      google.src = "https://chart.apis.google.com/chart?cht=qr&chs=" + size + "x" + size + "&chld=" + correction + "|0&choe=UTF-8&chl=" + encodedData;
       break;
     case "zxing":
       const zxing = this.createSafeImage();
-      zxing.src = `https://zxing.org/w/chart?cht=qr&chs=${containerSize}x${containerSize}&chld=${correction}&choe=UTF-8&chl=${encodedData}`;
+      zxing.src = "https://zxing.org/w/chart?cht=qr&chs=" + containerSize + "x" + containerSize + "&chld=" + correction + "&choe=UTF-8&chl=" + encodedData;
       break;
   }
 };
@@ -336,7 +335,6 @@ App.prototype.initCorrectionLevels = function() {
 };
 
 App.prototype.selectCorrectionLevel = function(level, event) {
-  console.log(`selectCorrectionLevel(${level})`);
   this.setCorrectionLevel(level);
   this.renderCorrectionLevels();
   this.renewQrCode();
@@ -363,7 +361,7 @@ App.prototype.setCorrectionLevel = function(level) {
 
 App.prototype.getCorrectionLevel = function() {
   const level = localStorage.getItem(App.LOCAL_STORAGE_CORRECTION_LEVEL);
-  return App.ERROR_CORRECTION_LEVELS.includes(level) ? level : App.DEFAULT_ERROR_CORRECTION_LEVEL;
+  return App.ERROR_CORRECTION_LEVELS.indexOf(level) !== -1 ? level : App.DEFAULT_ERROR_CORRECTION_LEVEL;
 };
 
 App.prototype.parseCorrectionLevel = function(raw) {
@@ -384,7 +382,11 @@ App.prototype.parseCorrectionLevel = function(raw) {
 function Utils() {}
 
 Utils.inflate = function(template) {
-  return document.importNode(template.content, true);
+  if (template.content) {
+    return document.importNode(template.content, true).firstElementChild;
+  } else {
+    return document.importNode(template.firstElementChild, true);
+  }
 };
 
 Utils.show = function(element) {
