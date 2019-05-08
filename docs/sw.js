@@ -1,6 +1,6 @@
 "use strict";
 
-const cacheName = "qrcode-1.1.0";
+const cacheName = "qrcode-1.2.0";
 
 self.addEventListener("install", event => {
   event.waitUntil(
