@@ -6,6 +6,7 @@ App.DEFAULT_QRCODE_GENERATOR = "local";
 App.ERROR_CORRECTION_LEVELS = ["L", "M", "Q", "H"];
 App.DEFAULT_ERROR_CORRECTION_LEVEL = "M";
 
+App.LOCAL_STORAGE_FAVORITES = "favorites";
 App.LOCAL_STORAGE_GENERATOR = "generator";
 App.LOCAL_STORAGE_CORRECTION_LEVEL = "correction-level";
 
@@ -19,9 +20,20 @@ function App() {
   this.initPWA();
   this.initGenerators();
   this.initCorrectionLevels();
+  this.initFavorites();
   this.initInput();
   window.onhashchange();
 }
+
+App.prototype.initElements = function() {
+  this.input = document.getElementById("input");
+  this.container = document.getElementById("container");
+  this.progress = document.getElementById("progress");
+  this.favoriteToggle = document.getElementById("favorite-toggle");
+  this.favoritesToggle = document.getElementById("favorites-toggle");
+  this.favoritesContainer = document.getElementById("favorites-container");
+  this.favoriteTemplate = document.getElementById("template-favorite-item");
+};
 
 App.prototype.initServiceWorker = function() {
   if ("serviceWorker" in navigator) {
@@ -62,10 +74,83 @@ App.prototype.promptPWA = function(event) {
   event.stopPropagation();
 };
 
-App.prototype.initElements = function() {
-  this.input = document.getElementById("input");
-  this.container = document.getElementById("container");
-  this.progress = document.getElementById("progress");
+App.prototype.initFavorites = function() {
+  this.favorites = this.getFavorites();
+  for (var i = 0; i < this.favorites.length; i++) {
+    this.addFavoriteNode(this.favorites[i]);
+  }
+  this.favoriteToggle.addEventListener("click", this.toggleFavorite.bind(this), false);
+};
+
+App.prototype.toggleFavorite = function(event) {
+  const value = this.input.value;
+  if (this.favorites.indexOf(value) !== -1) {
+    this.removeFavorite(value);
+  } else {
+    this.addFavorite(value);
+  }
+};
+
+App.prototype.isFavorite = function(favorite) {
+  return this.favorites.indexOf(favorite) !== -1;
+};
+
+App.prototype.addFavorite = function(favorite) {
+  this.favorites.unshift(favorite);
+  this.addFavoriteNode(favorite);
+  this.setFavorites(this.favorites);
+  this.renderInput();
+};
+
+App.prototype.addFavoriteNode = function(favorite) {
+  const item = Utils.inflate(this.favoriteTemplate).firstElementChild;
+  const span = item.querySelector("[favorite-item]");
+  span.textContent = favorite;
+  span.setAttribute("favorite-item", favorite);
+  item.href = "#" + encodeURIComponent(favorite);
+  const remove = item.querySelector("button.close");
+  remove.addEventListener(
+    "click",
+    function f(event) {
+      event.preventDefault();
+      this.removeFavorite(favorite);
+      // This will close the dropdown when empty
+      if (this.favorites.length > 0) {
+        event.stopPropagation();
+      }
+    }.bind(this)
+  );
+  this.favoritesContainer.insertBefore(item, this.favoritesContainer.children[1]);
+  this.favoritesToggle.removeAttribute("disabled");
+};
+
+App.prototype.removeFavorite = function(favorite) {
+  this.favorites.splice(this.favorites.indexOf(favorite), 1);
+  this.removeFavoriteNode(favorite);
+  this.setFavorites(this.favorites);
+  this.renderInput();
+};
+
+App.prototype.removeFavoriteNode = function(favorite) {
+  const items = this.favoritesContainer.querySelectorAll("[favorite-item]");
+  for (var i = 0; i < items.length; i++) {
+    const item = items[i];
+    if (item.getAttribute("favorite-item") == favorite) {
+      this.favoritesContainer.removeChild(item.parentNode);
+    }
+  }
+  if (this.favorites.length == 0) {
+    this.favoritesToggle.setAttribute("disabled", "true");
+  }
+};
+
+App.prototype.setFavorites = function(favorites) {
+  localStorage.setItem(App.LOCAL_STORAGE_FAVORITES, JSON.stringify(favorites));
+};
+
+App.prototype.getFavorites = function() {
+  const favorites = localStorage.getItem(App.LOCAL_STORAGE_FAVORITES);
+  return (favorites && JSON.parse(favorites)) || [];
 };
 
 App.prototype.initGenerators = function() {
@@ -215,14 +300,29 @@ App.prototype.initInput = function() {
 
   window.onhashchange = function() {
     this.input.value = decodeURIComponent(window.location.hash.substr(1));
+    this.renderInput();
     this.renderQrCode();
   }.bind(this);
 };
 
 App.prototype.onInputChange = function(event) {
+  document.location.hash = encodeURIComponent(this.input.value);
+  this.renderInput();
+};
+
+App.prototype.renderInput = function() {
   const data = this.input.value;
   this.input.setAttribute("rows", (data.match(/\n/g) || []).length + 1);
-  document.location.hash = encodeURIComponent(data);
+  if (this.isFavorite(data)) {
+    this.input.classList.add("text-primary");
+  } else {
+    this.input.classList.remove("text-primary");
+  }
+  if (data.length == 0) {
+    this.favoriteToggle.setAttribute("disabled", "true");
+  } else {
+    this.favoriteToggle.removeAttribute("disabled");
+  }
 };
 
 App.prototype.initCorrectionLevels = function() {
