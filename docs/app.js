@@ -65,6 +65,7 @@ App.prototype.promptPWA = function(event) {
 App.prototype.initElements = function() {
   this.input = document.getElementById("input");
   this.container = document.getElementById("container");
+  this.progress = document.getElementById("progress");
 };
 
 App.prototype.initGenerators = function() {
@@ -177,6 +178,7 @@ App.prototype.createSafeImage = function() {
 };
 
 App.prototype.renderState = function(success) {
+  Utils.hide(this.progress);
   if (success) {
     this.container.classList.remove("border");
     this.container.classList.remove("border-danger");
@@ -187,15 +189,23 @@ App.prototype.renderState = function(success) {
 };
 
 App.prototype.renewQrCode = function() {
+  Utils.show(this.progress);
+
   // Clear local QrCode
   if (this.qrcode) {
     this.qrcode.clear();
     this.qrcode = null;
   }
-  // Remove previous canvas/image
-  while (this.container.firstChild) {
-    this.container.removeChild(this.container.firstChild);
+
+  // Remove previous canvas/images
+  const nodes = this.container.childNodes;
+  for (let i = nodes.length - 1; i >= 0; i--) {
+    const node = nodes[i];
+    if (node != this.progress) {
+      Utils.remove(node);
+    }
   }
+
   this.renderQrCode();
 };
 

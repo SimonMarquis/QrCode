@@ -41,6 +41,18 @@ div#container > img {
   border-radius: .25rem!important;
 }
 
+/* Centered progress inside container */
+#progress {
+  position: absolute;
+  top: 40%;
+  bottom: 40%;
+  left: 40%;
+  right: 40%;
+  width: 20%;
+  height: 20%;
+  border: 0;
+}
+
 /* Keep the canvas invisible (not required to render image) */
 div#container > canvas {
   display: none!important;
