@@ -41,6 +41,7 @@ div#container > canvas {
   word-break: break-all;
   resize: vertical;
   min-height: min-content;
+  overflow: hidden;
 }
 
 /* Fake black border on textarea */
