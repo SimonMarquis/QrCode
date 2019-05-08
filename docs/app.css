@@ -1,6 +1,6 @@
 html {
-  width:100vw;
-  overflow-x:hidden;
+  width: 100vw;
+  overflow-x: hidden;
 }
 
 body {
@@ -38,7 +38,7 @@ div#container > img {
   width: 100%;
   height: 100%;
   border: 1px solid #000;
-  border-radius: .25rem!important;
+  border-radius: 0.25rem !important;
 }
 
 /* Centered progress inside container */
@@ -55,7 +55,7 @@ div#container > img {
 
 /* Keep the canvas invisible (not required to render image) */
 div#container > canvas {
-  display: none!important;
+  display: none !important;
 }
 
 /* Styling of textarea */
@@ -68,10 +68,11 @@ div#container > canvas {
 
 /* Fake black border on textarea */
 #input:focus {
-  box-shadow: 0 0 0 0.2rem rgba(52,58,64,.5);
+  box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
 }
 
 /* Replace default active (blue) background color with neutral gray */
-.dropdown-item.active, .dropdown-item:active {
-  background-color: rgba(0,0,0,.2);
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: rgba(0, 0, 0, 0.2);
 }
