@@ -3,8 +3,8 @@ package fr.smarquis.qrcode
 import android.app.Application
 import android.content.SharedPreferences
 import android.os.Build
-import android.preference.PreferenceManager
 import android.util.Log
+import androidx.preference.PreferenceManager
 import java.util.concurrent.atomic.AtomicReference
 
 class ModeHolder private constructor(application: Application) {

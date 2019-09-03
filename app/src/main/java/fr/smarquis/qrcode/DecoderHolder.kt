@@ -3,9 +3,9 @@ package fr.smarquis.qrcode
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import android.util.Log
 import androidx.annotation.WorkerThread
+import androidx.preference.PreferenceManager
 import fr.smarquis.qrcode.Decoder.MLKit
 import fr.smarquis.qrcode.Decoder.ZXing
 import io.fotoapparat.preview.Frame
