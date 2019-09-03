@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.text.SpannableStringBuilder
 import android.util.Log
+import android.view.Gravity
 import android.widget.Toast
 import androidx.core.content.getSystemService
 import androidx.core.text.bold
@@ -95,5 +96,5 @@ fun copyToClipboard(context: Context, string: String?) {
         append("\n\n")
         bold { append(string) }
     }
-    Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+    Toast.makeText(context, text, Toast.LENGTH_LONG).apply { setGravity(Gravity.CENTER, 0, 0) }.show()
 }

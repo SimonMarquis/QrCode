@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
             logger = logcat(),
             lensPosition = back(),
             cameraConfiguration = CameraConfiguration(frameProcessor = this@MainActivity::processFrame),
-            cameraErrorCallback = { Toast.makeText(this, it.message, Toast.LENGTH_LONG).show() }
+            cameraErrorCallback = { Toast.makeText(this, it.message, Toast.LENGTH_LONG).apply { setGravity(Gravity.CENTER, 0, 0) }.show() }
         )
 
         render()
