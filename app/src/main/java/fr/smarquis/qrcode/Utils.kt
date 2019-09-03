@@ -88,7 +88,8 @@ fun safeStartIntent(context: Context, intent: Intent?): Boolean {
 }
 
 fun copyToClipboard(context: Context, string: String?) {
-    context.getSystemService<ClipboardManager>()?.primaryClip = newPlainText(context.packageName, string ?: return)
+    val data = newPlainText(context.packageName, string ?: return)
+    context.getSystemService<ClipboardManager>()?.setPrimaryClip(data)
     val text = buildSpannedString {
         append(context.getString(R.string.copied_to_clipboard))
         append("\n\n")

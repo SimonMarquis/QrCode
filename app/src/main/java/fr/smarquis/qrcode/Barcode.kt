@@ -14,6 +14,8 @@ import androidx.core.text.scale
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode.*
 import com.google.zxing.Result
+import java.lang.Double.parseDouble
+import java.util.*
 import java.util.regex.Pattern
 
 sealed class Barcode(open val format: Format, open val value: String) {
@@ -41,7 +43,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
             val value = result.text
             val uri = value.toUri()
             val scheme = uri.scheme
-            return when (scheme?.toLowerCase()) {
+            return when (scheme?.toLowerCase(Locale.ROOT)) {
                 "http", "https" -> Url(value, format)
                 "geo" -> GeoPoint.parse(value, format)
                 else -> null
@@ -208,18 +210,18 @@ sealed class Barcode(open val format: Format, open val value: String) {
                 val longitude: Double
                 val altitude: Double
                 try {
-                    latitude = java.lang.Double.parseDouble(matcher.group(1))
+                    latitude = parseDouble(matcher.group(1).orEmpty())
                     if (latitude > 90.0 || latitude < -90.0) {
                         return null
                     }
-                    longitude = java.lang.Double.parseDouble(matcher.group(2))
+                    longitude = parseDouble(matcher.group(2).orEmpty())
                     if (longitude > 180.0 || longitude < -180.0) {
                         return null
                     }
                     if (matcher.group(3) == null) {
                         altitude = 0.0
                     } else {
-                        altitude = java.lang.Double.parseDouble(matcher.group(3))
+                        altitude = parseDouble(matcher.group(3).orEmpty())
                         if (altitude < 0.0) {
                             return null
                         }

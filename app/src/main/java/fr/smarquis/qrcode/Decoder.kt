@@ -19,8 +19,7 @@ import com.google.zxing.ResultPoint
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.multi.GenericMultipleBarcodeReader
 import io.fotoapparat.preview.Frame
-import java.lang.Math.pow
-import java.lang.Math.sqrt
+import kotlin.math.pow
 
 sealed class Decoder {
 
@@ -53,7 +52,7 @@ sealed class Decoder {
         }
 
         private fun distance(x1: Double, x2: Double, y1: Double, y2: Double): Double {
-            return sqrt(pow(x1 - x2, 2.0) + pow(y1 - y2, 2.0))
+            return kotlin.math.sqrt((x1 - x2).pow(2.0) + (y1 - y2).pow(2.0))
         }
 
     }

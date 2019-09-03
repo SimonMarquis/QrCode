@@ -3,9 +3,14 @@ package fr.smarquis.qrcode
 import android.Manifest.permission.CAMERA
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.graphics.Color
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color.BLACK
 import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.Q
 import android.os.Bundle
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
@@ -46,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val REQUEST_CODE_CAMERA_PERMISSION = 1234
         private const val REQUEST_CODE_PERMISSION_SETTINGS = 4321
-        private val CUSTOM_TABS_INTENT = CustomTabsIntent.Builder().setToolbarColor(Color.BLACK).build()
+        private val CUSTOM_TABS_INTENT = CustomTabsIntent.Builder().setToolbarColor(BLACK).build()
     }
 
     private val mode: ModeHolder by lazy { ModeHolder.instance(application) }
@@ -63,7 +68,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUi() {
         setContentView(R.layout.activity_main)
-        progressBar.indeterminateDrawable?.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
+        progressBar.indeterminateDrawable?.colorFilter =
+            if (SDK_INT >= Q) BlendModeColorFilter(BLACK, BlendMode.SRC_IN)
+            else PorterDuffColorFilter(BLACK, PorterDuff.Mode.SRC_IN)
 
         bottomSheetBehavior = from(bottomSheetLinearLayout)
         bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
@@ -98,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_item_scanner_zxing -> decoder.set(Decoder.ZXing)
                 R.id.menu_item_mode_auto -> mode.set(AUTO)
                 R.id.menu_item_mode_manual -> mode.set(MANUAL)
-                R.id.menu_item_generator -> CUSTOM_TABS_INTENT.launchUrl(this, getString(R.string.webapp).toUri()).run { true }
+                R.id.menu_item_generator -> CUSTOM_TABS_INTENT.launchUrl(this, getString(R.string.webapp).toUri()).let { true }
                 else -> true
             }.also { applySettingsState(settings) }
         }
