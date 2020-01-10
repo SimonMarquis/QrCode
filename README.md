@@ -44,15 +44,112 @@ Non-exhaustive list of devices without touch screen support:
 
 #### Content types
 
-- Text
-- WiFi
-- Url
-- Sms
-- GeoPoint
-- ContactInfo
-- Email
-- Phone
-- CalendarEvent
+- <details><summary>Text</summary>
+
+  ![](art/QR_CODE_Text.png)
+  
+  ```
+  Hello, World!
+  ```
+  
+  </details>
+- <details><summary>WiFi</summary>
+  
+  ![](art/QR_CODE_WiFi.png)
+  
+  ```
+  WIFI:S:MyWiFi;T:WPA;P:letmein;H:true;;
+  ```
+
+  </details>
+- <details><summary>Url</summary>
+  
+  ![](art/QR_CODE_Url.png)
+  
+  ```
+  https://example.com
+  ```
+
+  </details>
+- <details><summary>Phone</summary>
+  
+  ![](art/QR_CODE_Phone.png)
+  
+  ```
+  tel:+1234567890
+  ```
+
+  </details>
+- <details><summary>Sms</summary>
+  
+  ![](art/QR_CODE_Sms.png)
+  
+  ```
+  smsto:+1234567890:Hello, World!
+  ```
+
+  </details>
+- <details><summary>Email</summary>
+  
+  ![](art/QR_CODE_Email.png)
+  
+  ```
+  mailto:user@example.com
+  ```
+
+  </details>
+- <details><summary>GeoPoint</summary>
+  
+  ![](art/QR_CODE_GeoPoint.png)
+  
+  ```
+  geo:48.8566,2.3522?q=Earth
+  ```
+
+  </details>
+- <details><summary>ContactInfo (vCard)</summary>
+  
+  ![](art/QR_CODE_ContactInfo_vCard.png)
+  
+  ```
+  BEGIN:VCARD
+  VERSION:3.0
+  N:User
+  ORG:Example
+  TITLE:Head
+  TEL:+1234567890
+  URL:https://example.com
+  EMAIL:user@example.com
+  ADR:Earth
+  NOTE:Hello\, World!
+  END:VCARD
+  ```
+  
+  </details>
+- <details><summary>ContactInfo (MeCard)</summary>
+  
+  ![](art/QR_CODE_ContactInfo_MeCard.png)
+  
+  ```
+  MECARD:N:User;ORG:Example;TEL:+1234567890;URL:https\://example.com;EMAIL:user@example.com;ADR:Earth;NOTE:Hello, World!Head;;
+  ```
+  
+  </details>
+- <details><summary>CalendarEvent</summary>
+  
+  ![](art/QR_CODE_CalendarEvent.png)
+  
+  ```
+  BEGIN:VEVENT
+  SUMMARY:Meeting
+  DTSTART:20200101T201400Z
+  DTEND:20200101T211400Z
+  LOCATION:Earth
+  DESCRIPTION:Readme
+  END:VEVENT
+  ```
+
+  </details>
 
 ## License
 
