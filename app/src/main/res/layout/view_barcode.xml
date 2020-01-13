@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/headerLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_peek_height"
+        android:clickable="false"
+        android:divider="@drawable/material_divider_1"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/bottom_sheet_horizontal_padding"
+        android:paddingRight="@dimen/bottom_sheet_horizontal_padding"
+        android:showDividers="middle">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:padding="@dimen/material_unit_0_5" />
+
+        <ImageView
+            android:id="@+id/iconImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/content_description_icon"
+            android:padding="@dimen/material_unit_1"
+            android:visibility="gone"
+            tools:src="@drawable/ic_subject_black_24dp"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/material_unit_1"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lines="1"
+            android:text="@string/status_scanning"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            tools:textColor="#000" />
+
+        <ImageView
+            android:id="@+id/copyImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/content_description_copy"
+            android:padding="@dimen/material_unit_1"
+            android:src="@drawable/ic_content_copy_black_24dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/openImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/content_description_open"
+            android:padding="@dimen/material_unit_1"
+            android:src="@drawable/ic_open_in_new_black_24dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/moreImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/content_description_more"
+            android:padding="@dimen/material_unit_1"
+            android:src="@drawable/ic_more_vert_black_24dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/descriptionLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/material_divider_1"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/bottom_sheet_horizontal_padding"
+        android:paddingRight="@dimen/bottom_sheet_horizontal_padding"
+        android:showDividers="beginning|middle|end">
+
+        <TextView
+            android:id="@+id/rawTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/detailsTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</merge>

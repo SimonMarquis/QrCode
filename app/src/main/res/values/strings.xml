@@ -14,4 +14,6 @@
     <string name="menu_item_mode_manual">👉 Manual</string>
     <string name="menu_item_mode_auto">🤖 Automatic</string>
     <string name="menu_item_generator">✏️ Generator</string>
+    <string name="toast_decoder_did_not_find_anything">Nothing found…</string>
+    <string name="single_decoder_activity_label">Scan</string>
 </resources>

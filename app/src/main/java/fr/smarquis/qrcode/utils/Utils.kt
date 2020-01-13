@@ -1,4 +1,4 @@
-package fr.smarquis.qrcode
+package fr.smarquis.qrcode.utils
 
 import android.content.ClipData.newPlainText
 import android.content.ClipboardManager
@@ -13,6 +13,7 @@ import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import fr.smarquis.qrcode.R
 
 const val TAG = "QrCode"
 
@@ -88,13 +89,14 @@ fun safeStartIntent(context: Context, intent: Intent?): Boolean {
     return false
 }
 
-fun copyToClipboard(context: Context, string: String?) {
-    val data = newPlainText(context.packageName, string ?: return)
+fun copyToClipboard(context: Context, string: String?, toast: Toast? = null): Toast? {
+    val data = newPlainText(context.packageName, string ?: return null)
+    toast?.cancel()
     context.getSystemService<ClipboardManager>()?.setPrimaryClip(data)
     val text = buildSpannedString {
         append(context.getString(R.string.copied_to_clipboard))
         append("\n\n")
         bold { append(string) }
     }
-    Toast.makeText(context, text, Toast.LENGTH_LONG).apply { setGravity(Gravity.CENTER, 0, 0) }.show()
+    return Toast.makeText(context, text, Toast.LENGTH_LONG).apply { setGravity(Gravity.CENTER, 0, 0) }.also { it.show() }
 }

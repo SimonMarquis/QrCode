@@ -2,8 +2,9 @@
 
 <details><summary>Releases</summary>
 
-<!-- MarkdownTOC -->
+<!-- MarkdownTOC autolink="true" -->
 
+- [1.4.0](#140)
 - [1.3.1](#131)
 - [1.3.0](#130)
 - [1.2.0](#120)
@@ -12,6 +13,13 @@
 
 <!-- /MarkdownTOC -->
 </details>
+
+## 1.4.0
+> 2020.01.13
+
+- 🔍 Pinch-to-zoom
+- 🖼️ Scan shared images
+- 🛠️ Refactor with ViewModel, LiveData and Coroutines
 
 ## 1.3.1
 > 2019.09.03

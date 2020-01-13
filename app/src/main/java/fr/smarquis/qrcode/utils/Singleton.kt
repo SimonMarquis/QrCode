@@ -1,4 +1,4 @@
-package fr.smarquis.qrcode
+package fr.smarquis.qrcode.utils
 
 open class Singleton<out T, in A>(creator: (A) -> T) {
     private var creator: ((A) -> T)? = creator

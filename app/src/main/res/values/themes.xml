@@ -1,9 +1,26 @@
 <resources>
 
+    <!-- App -->
+
     <style name="Theme.App" parent="Base.Theme.App" />
 
     <style name="Base.V1.Theme.App" parent="Theme.AppCompat.NoActionBar" />
 
     <style name="Base.Theme.App" parent="Base.V1.Theme.App" />
+
+    <!-- Translucent -->
+
+    <style name="Theme.Translucent" parent="Base.Theme.Translucent" />
+
+    <style name="Base.V1.Theme.Translucent" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowBackground">#00000000</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+    </style>
+
+    <style name="Base.Theme.Translucent" parent="Base.V1.Theme.Translucent" />
 
 </resources>

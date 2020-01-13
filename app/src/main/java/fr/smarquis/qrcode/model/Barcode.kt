@@ -1,4 +1,4 @@
-package fr.smarquis.qrcode
+package fr.smarquis.qrcode.model
 
 import android.content.Context
 import android.content.Intent
@@ -14,6 +14,9 @@ import androidx.core.text.scale
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode.*
 import com.google.zxing.Result
+import fr.smarquis.qrcode.R
+import fr.smarquis.qrcode.utils.appendKeyValue
+import fr.smarquis.qrcode.utils.isSafeIntent
 import java.lang.Double.parseDouble
 import java.util.*
 import java.util.regex.Pattern

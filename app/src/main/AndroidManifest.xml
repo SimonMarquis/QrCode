@@ -21,10 +21,25 @@
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="barcode" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".multi.MultiDecoderActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".single.SingleDecoderActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/single_decoder_activity_label"
+            android:noHistory="true"
+            android:screenOrientation="behind"
+            android:taskAffinity=".scan"
+            android:theme="@style/Theme.Translucent">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
 

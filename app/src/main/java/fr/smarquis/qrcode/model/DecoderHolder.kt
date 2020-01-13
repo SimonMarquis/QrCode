@@ -1,17 +1,21 @@
-package fr.smarquis.qrcode
+package fr.smarquis.qrcode.model
 
 import android.app.Application
-import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.preference.PreferenceManager
-import fr.smarquis.qrcode.Decoder.MLKit
-import fr.smarquis.qrcode.Decoder.ZXing
+import fr.smarquis.qrcode.model.Decoder.MLKit
+import fr.smarquis.qrcode.model.Decoder.ZXing
+import fr.smarquis.qrcode.utils.Singleton
+import fr.smarquis.qrcode.utils.TAG
+import fr.smarquis.qrcode.utils.checkGooglePlayServices
+import fr.smarquis.qrcode.utils.isGooglePlayServicesAvailable
 import io.fotoapparat.preview.Frame
 import java.util.concurrent.atomic.AtomicReference
 
-class DecoderHolder private constructor(application: Application) {
+class DecoderHolder private constructor(private val application: Application) {
 
     companion object : Singleton<DecoderHolder, Application>(::DecoderHolder) {
         private const val SHARED_PREFERENCES_KEY = "decoder"
@@ -38,14 +42,31 @@ class DecoderHolder private constructor(application: Application) {
 
     @Throws(java.lang.Exception::class)
     @WorkerThread
-    fun process(context: Context, frame: Frame): Barcode? {
+    fun decode(frame: Frame): Barcode? {
+        return process(frame)
+    }
+
+    @Throws(java.lang.Exception::class)
+    @WorkerThread
+    fun decode(uri: Uri): Barcode? {
+        return process(uri)
+    }
+
+    @Throws(java.lang.Exception::class)
+    @WorkerThread
+    private fun process(any: Any): Barcode? {
         reference.get().let {
             try {
-                return it.decode(context, frame)
+                return when (any) {
+                    is Frame -> it.decode(application, any)
+                    is Uri -> it.decode(application, any)
+                    else -> throw UnsupportedOperationException()
+                }
             } catch (e: Exception) {
                 if (it is MLKit) {
                     it.isAvailable = false
                     set(ZXing)
+                    return process(any)
                 }
                 throw e
             }
@@ -64,7 +85,7 @@ class DecoderHolder private constructor(application: Application) {
     }
 
     private fun log(decoder: Decoder) {
-        Log.d(TAG, "Process frames with `${decoder.name()}`")
+        Log.d(TAG, "Decoder: `${decoder.name()}`")
     }
 
 }

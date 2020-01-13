@@ -1,4 +1,4 @@
-package fr.smarquis.qrcode
+package fr.smarquis.qrcode.model
 
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
 import com.google.zxing.BarcodeFormat

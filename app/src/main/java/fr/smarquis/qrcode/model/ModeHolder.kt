@@ -1,10 +1,12 @@
-package fr.smarquis.qrcode
+package fr.smarquis.qrcode.model
 
 import android.app.Application
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
 import androidx.preference.PreferenceManager
+import fr.smarquis.qrcode.utils.Singleton
+import fr.smarquis.qrcode.utils.TAG
 import java.util.concurrent.atomic.AtomicReference
 
 class ModeHolder private constructor(application: Application) {
@@ -38,13 +40,19 @@ class ModeHolder private constructor(application: Application) {
                 else -> Mode.AUTO
             }
         )
+        log(reference.get())
     }
 
     fun get(): Mode = reference.get()
 
     fun set(mode: Mode): Boolean {
-        sharedPreferences.edit().putString(SHARED_PREFERENCES_KEY, reference.get().name).apply()
+        log(mode)
+        sharedPreferences.edit().putString(SHARED_PREFERENCES_KEY, mode.name).apply()
         return reference.getAndSet(mode) != mode
+    }
+
+    private fun log(mode: Mode) {
+        Log.d(TAG, "Mode: `${mode}`")
     }
 
 }
