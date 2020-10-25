@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
@@ -44,7 +45,7 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
     companion object {
         private const val REQUEST_CODE_CAMERA_PERMISSION = 1234
         private const val REQUEST_CODE_PERMISSION_SETTINGS = 4321
-        private val CUSTOM_TABS_INTENT = CustomTabsIntent.Builder().setToolbarColor(BLACK).build()
+        private val CUSTOM_TABS_INTENT = CustomTabsIntent.Builder().setDefaultColorSchemeParams(CustomTabColorSchemeParams.Builder().setToolbarColor(BLACK).build()).build()
     }
 
     private lateinit var camera: Fotoapparat

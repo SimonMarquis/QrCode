@@ -28,7 +28,7 @@ class SingleDecoderActivity : AppCompatActivity() {
             open = { safeStartIntent(this, it.intent) },
             copy = { copyToClipboard(this, it.value) }
         )
-        viewModel.barcode.observe(this, Observer {
+        viewModel.barcode.observe(this, {
             barcodeView.barcode = it
             val mode = ModeHolder.instance(application).get()
             when {

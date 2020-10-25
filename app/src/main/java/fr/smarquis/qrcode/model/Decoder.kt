@@ -95,8 +95,8 @@ sealed class Decoder {
             val start = SystemClock.elapsedRealtime()
             val task = detector.process(InputImage.fromByteArray(frame.image, frame.size.width, frame.size.height, frame.rotation, IMAGE_FORMAT_NV21))
             val results = Tasks.await(task)
-            val vision = results.minBy {
-                distance(frame, it.boundingBox ?: return@minBy Double.MAX_VALUE)
+            val vision = results.minByOrNull {
+                distance(frame, it.boundingBox ?: return@minByOrNull Double.MAX_VALUE)
             } ?: return null
             val elapsed = SystemClock.elapsedRealtime() - start
             Log.d(TAG, "Found ${results.size} by ${name()} in ${elapsed}ms")
@@ -129,8 +129,8 @@ sealed class Decoder {
 
             try {
                 val results = multiReader.decodeMultiple(bitmap)
-                val result = results.minBy {
-                    distance(frame, it.resultPoints ?: return@minBy Double.MAX_VALUE)
+                val result = results.minByOrNull {
+                    distance(frame, it.resultPoints ?: return@minByOrNull Double.MAX_VALUE)
                 } ?: return null
                 val elapsed = SystemClock.elapsedRealtime() - start
                 Log.d(TAG, "Found ${results.size} by ${name()} in ${elapsed}ms")
@@ -165,8 +165,8 @@ sealed class Decoder {
             }
             try {
                 val results = multiReader.decodeMultiple(BinaryBitmap(HybridBinarizer(RGBLuminanceSource(image.width, image.height, image.pixels()))))
-                val result = results.minBy {
-                    distance(image, it.resultPoints ?: return@minBy Double.MAX_VALUE)
+                val result = results.minByOrNull {
+                    distance(image, it.resultPoints ?: return@minByOrNull Double.MAX_VALUE)
                 } ?: return null
                 val elapsed = SystemClock.elapsedRealtime() - start
                 Log.d(TAG, "Found ${results.size} by ${name()} in ${elapsed}ms")
