@@ -55,8 +55,7 @@ dependencies {
     implementation("androidx.multidex:multidex:2.0.1")
     implementation("androidx.preference:preference-ktx:1.1.1")
 
-    implementation("com.google.firebase:firebase-core:17.5.1")
-    implementation("com.google.firebase:firebase-ml-vision:24.1.0")
+    implementation("com.google.android.gms:play-services-mlkit-barcode-scanning:16.1.2")
     implementation("com.google.android.material:material:1.3.0-alpha03")
     implementation("com.google.zxing:core:3.4.1")
 

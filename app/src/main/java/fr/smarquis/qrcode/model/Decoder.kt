@@ -16,12 +16,12 @@ import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
 import androidx.exifinterface.media.ExifInterface.*
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.ml.vision.FirebaseVision
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode.FORMAT_ALL_FORMATS
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions
-import com.google.firebase.ml.vision.common.FirebaseVisionImage
-import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
+import com.google.mlkit.vision.barcode.Barcode.FORMAT_ALL_FORMATS
+import com.google.mlkit.vision.barcode.BarcodeScanner
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.common.InputImage.IMAGE_FORMAT_NV21
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.multi.GenericMultipleBarcodeReader
@@ -87,28 +87,13 @@ sealed class Decoder {
 
         override fun name(): String = "ML Kit"
 
-        private val detector: FirebaseVisionBarcodeDetector by lazy {
-            val instance = FirebaseVision.getInstance()
-            instance.isStatsCollectionEnabled = false
-            instance.getVisionBarcodeDetector(FirebaseVisionBarcodeDetectorOptions.Builder().setBarcodeFormats(FORMAT_ALL_FORMATS).build())
+        private val detector: BarcodeScanner by lazy {
+            BarcodeScanning.getClient(BarcodeScannerOptions.Builder().setBarcodeFormats(FORMAT_ALL_FORMATS).build())
         }
 
         override fun decode(context: Context, frame: Frame): Barcode? {
             val start = SystemClock.elapsedRealtime()
-            val metadata = FirebaseVisionImageMetadata.Builder()
-                .setWidth(frame.size.width)
-                .setHeight(frame.size.height)
-                .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
-                .setRotation(
-                    when (frame.rotation) {
-                        90 -> FirebaseVisionImageMetadata.ROTATION_90
-                        180 -> FirebaseVisionImageMetadata.ROTATION_180
-                        270 -> FirebaseVisionImageMetadata.ROTATION_270
-                        else -> FirebaseVisionImageMetadata.ROTATION_0
-                    }
-                )
-                .build()
-            val task = detector.detectInImage(FirebaseVisionImage.fromByteArray(frame.image, metadata))
+            val task = detector.process(InputImage.fromByteArray(frame.image, frame.size.width, frame.size.height, frame.rotation, IMAGE_FORMAT_NV21))
             val results = Tasks.await(task)
             val vision = results.minBy {
                 distance(frame, it.boundingBox ?: return@minBy Double.MAX_VALUE)
@@ -120,7 +105,7 @@ sealed class Decoder {
 
         override fun decode(context: Context, uri: Uri): Barcode? {
             val start = SystemClock.elapsedRealtime()
-            val task = detector.detectInImage(FirebaseVisionImage.fromFilePath(context, uri))
+            val task = detector.process(InputImage.fromFilePath(context, uri))
             val results = Tasks.await(task)
             val vision = results.firstOrNull() ?: return null
             val elapsed = SystemClock.elapsedRealtime() - start

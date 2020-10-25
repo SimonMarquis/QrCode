@@ -11,8 +11,8 @@ import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.color
 import androidx.core.text.scale
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode.*
+import com.google.mlkit.vision.barcode.Barcode as VisionBarcode
+import com.google.mlkit.vision.barcode.Barcode.*
 import com.google.zxing.Result
 import fr.smarquis.qrcode.R
 import fr.smarquis.qrcode.utils.appendKeyValue
@@ -25,7 +25,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
 
     companion object {
 
-        fun parse(context: Context, vision: FirebaseVisionBarcode): Barcode {
+        fun parse(context: Context, vision: VisionBarcode): Barcode {
             val format = Format.of(vision)
             val value = vision.rawValue.orEmpty()
             return when (vision.valueType) {
@@ -121,9 +121,9 @@ sealed class Barcode(open val format: Format, open val value: String) {
         private val encryptionString: String
             get() =
                 when (encryption) {
-                    FirebaseVisionBarcode.WiFi.TYPE_OPEN -> "OPEN"
-                    FirebaseVisionBarcode.WiFi.TYPE_WPA -> "WPA"
-                    FirebaseVisionBarcode.WiFi.TYPE_WEP -> "WEP"
+                    VisionBarcode.WiFi.TYPE_OPEN -> "OPEN"
+                    VisionBarcode.WiFi.TYPE_WPA -> "WPA"
+                    VisionBarcode.WiFi.TYPE_WEP -> "WEP"
                     else -> "? ($encryption)"
                 }
 
@@ -242,7 +242,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
     data class ContactInfo(
         override val value: String,
         override val format: Format,
-        val contactInfo: FirebaseVisionBarcode.ContactInfo
+        val contactInfo: VisionBarcode.ContactInfo
     ) : Barcode(format, value) {
         override val icon = R.drawable.ic_account_circle_black_24dp
         override val key: String = "Contact"
@@ -289,7 +289,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
     data class CalendarEvent(
         override val value: String,
         override val format: Format,
-        val event: FirebaseVisionBarcode.CalendarEvent
+        val event: VisionBarcode.CalendarEvent
     ) : Barcode(format, value) {
         override val icon = R.drawable.ic_event_available_black_24dp
         override val key: String = "Event"
