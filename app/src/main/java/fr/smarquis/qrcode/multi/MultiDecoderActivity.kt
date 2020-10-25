@@ -1,6 +1,7 @@
 package fr.smarquis.qrcode.multi
 
 import android.Manifest.permission.CAMERA
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Color.BLACK
@@ -13,12 +14,15 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.view.SoundEffectConstants
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.net.toUri
@@ -43,8 +47,6 @@ import kotlinx.android.synthetic.main.activity_multi_decoder.*
 class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     companion object {
-        private const val REQUEST_CODE_CAMERA_PERMISSION = 1234
-        private const val REQUEST_CODE_PERMISSION_SETTINGS = 4321
         private val CUSTOM_TABS_INTENT = CustomTabsIntent.Builder().setDefaultColorSchemeParams(CustomTabColorSchemeParams.Builder().setToolbarColor(BLACK).build()).build()
     }
 
@@ -58,6 +60,24 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
         PopupMenu(ContextThemeWrapper(this, R.style.PopupMenu), barcodeView.anchor(), Gravity.END).apply {
             inflate(R.menu.menu_multi_decoder)
             setOnMenuItemClickListener(this@MultiDecoderActivity)
+        }
+    }
+
+    private val openAppDetailsSettings: ActivityResultLauncher<Void?> = registerForActivityResult(object : ActivityResultContract<Void?, Boolean>() {
+        override fun createIntent(context: Context, input: Void?): Intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null))
+        override fun parseResult(resultCode: Int, intent: Intent?): Boolean = hasCameraPermission()
+    }) { hasCameraPermission ->
+        if (!hasCameraPermission) requestCameraPermission()
+    }
+
+    private val requestPermission: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        when {
+            isGranted -> {
+                viewModel.reset()
+                camera.start()
+            }
+            shouldShowRequestPermissionRationale(this, CAMERA) -> requestCameraPermission()
+            else -> openAppDetailsSettings.launch()
         }
     }
 
@@ -109,48 +129,18 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
 
     override fun onStart() {
         super.onStart()
-        if (hasCameraPermission()) {
-            camera.start()
-        } else {
-            requestCameraPermission()
-        }
+        if (hasCameraPermission()) camera.start()
+        else requestCameraPermission()
     }
 
     override fun onStop() {
         super.onStop()
-        if (hasCameraPermission()) {
-            camera.stop()
-        }
+        if (hasCameraPermission()) camera.stop()
     }
 
     private fun hasCameraPermission(): Boolean = checkSelfPermission(this, CAMERA) == PERMISSION_GRANTED
 
-    private fun requestCameraPermission() = requestPermissions(this, arrayOf(CAMERA), REQUEST_CODE_CAMERA_PERMISSION)
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode != REQUEST_CODE_CAMERA_PERMISSION) return
-        if (grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED) {
-            viewModel.reset()
-            camera.start()
-        } else {
-            if (shouldShowRequestPermissionRationale(this, CAMERA)) {
-                requestCameraPermission()
-            } else {
-                val uri = Uri.fromParts("package", packageName, null)
-                val intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS, uri)
-                startActivityForResult(intent, REQUEST_CODE_PERMISSION_SETTINGS)
-                finish()
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode != REQUEST_CODE_PERMISSION_SETTINGS) return
-        if (hasCameraPermission()) return
-        requestCameraPermission()
-    }
+    private fun requestCameraPermission() = requestPermission.launch(CAMERA)
 
     private fun applySettingsState(popup: PopupMenu) {
         popup.menu.apply {
