@@ -29,6 +29,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle.State.RESUMED
 import androidx.lifecycle.Observer
 import fr.smarquis.qrcode.R
+import fr.smarquis.qrcode.databinding.ActivityMultiDecoderBinding
 import fr.smarquis.qrcode.model.Decoder
 import fr.smarquis.qrcode.model.Mode.AUTO
 import fr.smarquis.qrcode.model.Mode.MANUAL
@@ -41,7 +42,6 @@ import io.fotoapparat.log.logcat
 import io.fotoapparat.selector.back
 import io.fotoapparat.view.CameraView
 import io.fotoapparat.view.FocusView
-import kotlinx.android.synthetic.main.activity_multi_decoder.*
 
 
 class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
@@ -50,6 +50,8 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
         private val CUSTOM_TABS_INTENT = CustomTabsIntent.Builder().setDefaultColorSchemeParams(CustomTabColorSchemeParams.Builder().setToolbarColor(BLACK).build()).build()
     }
 
+    private lateinit var binding: ActivityMultiDecoderBinding
+
     private lateinit var camera: Fotoapparat
 
     private var toast: Toast? = null
@@ -57,7 +59,7 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
     private val viewModel by viewModels<MultiDecoderViewModel>()
 
     private val settings by lazy {
-        PopupMenu(ContextThemeWrapper(this, R.style.PopupMenu), barcodeView.anchor(), Gravity.END).apply {
+        PopupMenu(ContextThemeWrapper(this, R.style.PopupMenu), binding.barcodeView.anchor(), Gravity.END).apply {
             inflate(R.menu.menu_multi_decoder)
             setOnMenuItemClickListener(this@MultiDecoderActivity)
         }
@@ -83,7 +85,7 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_multi_decoder)
+        setContentView(ActivityMultiDecoderBinding.inflate(layoutInflater).also { binding = it }.root)
         camera = Fotoapparat(
             context = this,
             view = findViewById<CameraView>(R.id.cameraView),
@@ -96,7 +98,7 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
                 finish()
             }
         )
-        barcodeView.configure(
+        binding.barcodeView.configure(
             onCollapsed = { viewModel.reset() },
             open = { safeStartIntent(this, it.intent) },
             copy = { toast = copyToClipboard(this, it.value, toast) },
@@ -104,20 +106,20 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
                 applySettingsState(settings)
                 settings.show()
             })
-        zoomView.configure(
+        binding.zoomView.configure(
             zoom = { camera.setZoom(it) },
-            focus = focusView
+            focus = binding.focusView
         )
 
         viewModel.barcode().observe(this, Observer {
             if (it == null) {
-                barcodeView.barcode = null
+                binding.barcodeView.barcode = null
                 return@Observer
             }
             Log.d(TAG, "onBarcode($it)")
-            coordinatorLayout.playSoundEffect(SoundEffectConstants.CLICK)
+            binding.coordinatorLayout.playSoundEffect(SoundEffectConstants.CLICK)
             when (viewModel.mode.get()) {
-                MANUAL -> barcodeView.barcode = it
+                MANUAL -> binding.barcodeView.barcode = it
                 AUTO -> {
                     if (lifecycle.currentState.isAtLeast(RESUMED) && !safeStartIntent(this, it.intent)) {
                         toast = copyToClipboard(this, it.value, toast)

@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("android.extensions")
     id("com.google.gms.google-services")
 }
 
@@ -21,12 +20,19 @@ android {
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    buildFeatures {
+        viewBinding = true
+    }
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
         }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     lintOptions {
         disable("UnsafeExperimentalUsageWarning")
@@ -40,31 +46,34 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
-    implementation("androidx.appcompat:appcompat:1.3.0-alpha02")
-    implementation("androidx.browser:browser:1.3.0-alpha06")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.2")
-    implementation("androidx.core:core-ktx:1.5.0-alpha04")
-    implementation("androidx.fragment:fragment-ktx:1.3.0-beta01")
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-beta01")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-beta01")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-beta01")
-    implementation("androidx.multidex:multidex:2.0.1")
-    implementation("androidx.preference:preference-ktx:1.1.1")
+    implementation(Kotlin.stdlib.jdk7)
 
-    implementation("com.google.android.gms:play-services-mlkit-barcode-scanning:16.1.2")
-    implementation("com.google.android.material:material:1.3.0-alpha03")
+    /* Kotlin Coroutines */
+    implementation(KotlinX.coroutines.core)
+    implementation(KotlinX.coroutines.android)
+    implementation(KotlinX.coroutines.playServices)
+
+    implementation(AndroidX.appCompat)
+    implementation(AndroidX.browser)
+    implementation(AndroidX.constraintLayout)
+    implementation(AndroidX.core.ktx)
+    implementation(AndroidX.fragmentKtx)
+    implementation(AndroidX.lifecycle.liveDataKtx)
+    implementation(AndroidX.lifecycle.runtimeKtx)
+    implementation(AndroidX.lifecycle.viewModelKtx)
+    implementation(AndroidX.multidex)
+    implementation(AndroidX.preferenceKtx)
+    implementation(AndroidX.transition)
+
+    implementation(Google.Android.material)
+    implementation(Google.Android.playServices.mlKit.vision.barcodeScanning)
     implementation("com.google.zxing:core:3.4.1")
 
     implementation("io.fotoapparat:fotoapparat:2.7.0")
 
-    testImplementation("junit:junit:4.13.1")
-    testImplementation("androidx.test.ext:junit-ktx:1.1.3-alpha02")
+    androidTestImplementation(AndroidX.test.ext.junitKtx)
+    androidTestImplementation(AndroidX.test.runner)
 
-    androidTestImplementation("junit:junit:4.13.1")
-    androidTestImplementation("androidx.test.ext:junit-ktx:1.1.3-alpha02")
-    androidTestImplementation("androidx.test:runner:1.3.1-alpha02")
+    /* JUnit */
+    testImplementation(Testing.junit4)
 }
