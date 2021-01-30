@@ -3,8 +3,8 @@
 </div>
 <h3 align="center">QrCode</h3>
 <p align="center">
+  <img src="https://github.com/SimonMarquis/QrCode/workflows/Android CI/badge.svg" alt="Android CI"><br>
   Scan and create QR Codes with ease.<br>
-  <img src="https://travis-ci.com/SimonMarquis/QrCode.svg?branch=master" alt="Build Status">
 </p>
 
 <br>
