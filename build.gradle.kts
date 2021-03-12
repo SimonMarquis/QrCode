@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:_")
@@ -12,8 +12,13 @@ buildscript {
 
 allprojects {
     repositories {
+        jcenter {
+            content {
+                includeGroup("io.fotoapparat")
+            }
+        }
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 

@@ -53,6 +53,7 @@ dependencies {
     implementation(KotlinX.coroutines.android)
     implementation(KotlinX.coroutines.playServices)
 
+    implementation(AndroidX.activity)
     implementation(AndroidX.appCompat)
     implementation(AndroidX.browser)
     implementation(AndroidX.constraintLayout)
