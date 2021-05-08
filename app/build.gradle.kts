@@ -10,11 +10,11 @@ val versionPatch = 0
 val versionBuild = 0
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
     defaultConfig {
         applicationId = "fr.smarquis.qrcode"
-        minSdkVersion(16)
-        targetSdkVersion(30)
+        minSdk = 16
+        targetSdk = 30
         versionCode = versionMajor * 1000000 + versionMinor * 10000 + versionPatch * 100 + versionBuild
         versionName = "$versionMajor.$versionMinor.$versionPatch"
         multiDexEnabled = true
@@ -34,7 +34,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    lintOptions {
+    lint {
         disable("UnsafeExperimentalUsageWarning")
     }
 }
