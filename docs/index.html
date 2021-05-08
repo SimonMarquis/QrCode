@@ -13,10 +13,8 @@
   <link rel="manifest" href="manifest.json" />
   <link href="favicon.ico" rel="icon" type="image/x-icon" />
   <link rel="icon" sizes="192x192" href="192.png" />
-  <script defer src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
-  <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
   <script defer src="qrcode.js"></script>
   <script defer src="app.js"></script>
   <link href="app.css" rel="stylesheet" />
@@ -25,9 +23,7 @@
 <body>
   <template id="template-favorite-item">
     <a class="dropdown-item text-wrap text-truncate" href="#">
-      <button type="button" class="close float-left px-2 btn">
-        <span aria-hidden="true">&times;</span>
-      </button>
+      <button type="button" class="btn-close btn-sm" aria-label="Close"></button>
       <small favorite-item></small>
     </a>
   </template>
@@ -36,36 +32,33 @@
     <div class="card bg-light shadow">
       <div class="card-body">
         <div class="input-group">
-          <div class="input-group-prepend">
-            <button id="favorites-toggle" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split border border-dark" data-toggle="dropdown" disabled></button>
-            <button id="favorite-toggle" type="button" class="btn btn-outline-dark border border-dark" title="Toggle favorite" disabled>⭐</button>
-            <div id="favorites-container" class="dropdown-menu border border-dark mw-100">
-              <h6 class="dropdown-header">Favorites</h6>
-            </div>
+          <button id="favorites-toggle" type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split border border-dark rounded-start" data-bs-toggle="dropdown" disabled></button>
+          <button id="favorite-toggle" type="button" class="btn btn-outline-dark border border-dark" title="Toggle favorite" disabled>⭐</button>
+          <div id="favorites-container" class="dropdown-menu border border-dark mw-100">
+            <h6 class="dropdown-header">Favorites</h6>
           </div>
           <textarea id="input" class="form-control border border-dark" rows="1" spellcheck="false" placeholder="…" aria-label="Text input" autofocus></textarea>
-          <div class="input-group-append">
-            <button class="btn btn-outline-dark border border-dark rounded-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Settings">⚙️</button>
-            <div class="dropdown-menu border border-dark dropdown-menu-right">
-              <h6 class="dropdown-header">Error correction level</h6>
-              <a class="dropdown-item" data-correction-level="L" href=""><b>L</b> <small>(Low ~ 7%)</small></a>
-              <a class="dropdown-item" data-correction-level="M" href=""><b>M</b> <small>(Medium ~ 15%)</small></a>
-              <a class="dropdown-item" data-correction-level="Q" href=""><b>Q</b> <small>(Quartile ~ 25%)</small></a>
-              <a class="dropdown-item" data-correction-level="H" href=""><b>H</b> <small>(High ~ 30%)</small></a>
+          <button class="btn btn-outline-dark border border-dark rounded-end" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Settings">⚙️</button>
+          <div class="dropdown-menu dropdown-menu-end border border-dark">
+            <h6 class="dropdown-header">Error correction level</h6>
+            <a class="dropdown-item" data-correction-level="L" href=""><b>L</b> <small>(Low ~ 7%)</small></a>
+            <a class="dropdown-item" data-correction-level="M" href=""><b>M</b> <small>(Medium ~ 15%)</small></a>
+            <a class="dropdown-item" data-correction-level="Q" href=""><b>Q</b> <small>(Quartile ~ 25%)</small></a>
+            <a class="dropdown-item" data-correction-level="H" href=""><b>H</b> <small>(High ~ 30%)</small></a>
+
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">QrCode generator</h6>
+            <a data-generator="local" id="export-local" class="dropdown-item" href="">Local <span class="float-end" title="Documentation" data-generator-url="https://github.com/davidshimjs/qrcodejs">📋</span></a>
+            <a data-generator="zxing" id="export-zxing" class="dropdown-item" href="">ZXing <span class="float-end" title="Documentation" data-generator-url="https://zxing.appspot.com/generator/">📋</span></a>
+            <a data-generator="google" id="export-google-charts" class="dropdown-item" href="">Google Charts <span class="float-end" title="Documentation" data-generator-url="https://developers.google.com/chart/infographics/docs/qr_codes">📋</span></a>
+            <div id="pwa" hidden>
               <div class="dropdown-divider"></div>
-              <h6 class="dropdown-header">QrCode generator</h6>
-              <a data-generator="local" id="export-local" class="dropdown-item" href="">Local <span class="float-right" title="Documentation" data-generator-url="https://github.com/davidshimjs/qrcodejs">📋</span></a>
-              <a data-generator="zxing" id="export-zxing" class="dropdown-item" href="">ZXing <span class="float-right" title="Documentation" data-generator-url="https://zxing.appspot.com/generator/">📋</span></a>
-              <a data-generator="google" id="export-google-charts" class="dropdown-item" href="">Google Charts <span class="float-right" title="Documentation" data-generator-url="https://developers.google.com/chart/infographics/docs/qr_codes">📋</span></a>
-              <div id="pwa" hidden>
-                <div class="dropdown-divider"></div>
-                <a id="pwa-install" class="dropdown-item" href="">Install PWA</a>
-              </div>
+              <a id="pwa-install" class="dropdown-item" href="">Install PWA</a>
             </div>
           </div>
         </div>
         <!-- input-group -->
-        <div id="container" style="margin-top: 1.25rem;">
+        <div id="container" style="margin-top: 1rem;">
           <div id="progress" class="spinner-grow text-secondary"></div>
         </div>
       </div>

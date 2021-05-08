@@ -108,7 +108,7 @@ App.prototype.addFavoriteNode = function(favorite) {
   span.textContent = favorite;
   span.setAttribute("favorite-item", favorite);
   item.href = "#" + encodeURIComponent(favorite);
-  const remove = item.querySelector("button.close");
+  const remove = item.querySelector("button.btn-close");
   remove.addEventListener(
     "click",
     function f(event) {
