@@ -3,8 +3,11 @@ package fr.smarquis.qrcode.single
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import android.os.Parcelable
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.liveData
 import fr.smarquis.qrcode.model.Barcode
 import fr.smarquis.qrcode.model.DecoderHolder
 import kotlinx.coroutines.Dispatchers
@@ -15,12 +18,16 @@ class SingleDecoderViewModel(application: Application, intent: Intent) : Android
     private val decoder: DecoderHolder = DecoderHolder.instance(application)
 
     val barcode: LiveData<Barcode?> = liveData {
-        val stream = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM)
-        when {
-            intent.action != Intent.ACTION_SEND -> emit(null)
-            intent.type?.startsWith("image/") != true -> emit(null)
-            stream !is Uri -> emit(null)
-            else -> emit(decode(stream))
+        when (intent.action) {
+            Intent.ACTION_VIEW -> intent.data
+            Intent.ACTION_SEND -> intent.getParcelableExtra(Intent.EXTRA_STREAM)
+            else -> null
+        }.takeIf {
+            intent.type?.startsWith("image/") == true
+        }?.let {
+            decode(it)
+        }.let {
+            emit(it)
         }
     }
 
