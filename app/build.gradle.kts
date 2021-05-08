@@ -70,7 +70,7 @@ dependencies {
     implementation(Google.Android.playServices.mlKit.vision.barcodeScanning)
     implementation("com.google.zxing:core:3.4.1")
 
-    implementation("io.fotoapparat:fotoapparat:2.7.0")
+    implementation("com.github.RedApparat:Fotoapparat:2.7.0")
 
     androidTestImplementation(AndroidX.test.ext.junitKtx)
     androidTestImplementation(AndroidX.test.runner)

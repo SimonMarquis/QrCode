@@ -18,7 +18,6 @@ import fr.smarquis.qrcode.R
 import fr.smarquis.qrcode.utils.appendKeyValue
 import fr.smarquis.qrcode.utils.isSafeIntent
 import java.lang.Double.parseDouble
-import java.util.*
 import java.util.regex.Pattern
 
 sealed class Barcode(open val format: Format, open val value: String) {
@@ -46,7 +45,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
             val value = result.text
             val uri = value.toUri()
             val scheme = uri.scheme
-            return when (scheme?.toLowerCase(Locale.ROOT)) {
+            return when (scheme?.lowercase()) {
                 "http", "https" -> Url(value, format)
                 "geo" -> GeoPoint.parse(value, format)
                 else -> null

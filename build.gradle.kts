@@ -12,13 +12,13 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter {
-            content {
-                includeGroup("io.fotoapparat")
-            }
-        }
         google()
         mavenCentral()
+        maven(url = "https://jitpack.io") {
+            content {
+                includeGroupByRegex("""com\.github\.RedApparat(\.Fotoapparat)?""")
+            }
+        }
     }
 }
 

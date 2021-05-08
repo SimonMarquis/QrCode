@@ -83,7 +83,7 @@ class Pictures {
     }
 
     private fun Bitmap.save(filename: String, format: Bitmap.CompressFormat = PNG, quality: Int = 100) {
-        InstrumentationRegistry.getInstrumentation().targetContext.openFileOutput("$filename.${format.name.toLowerCase()}", Context.MODE_PRIVATE).use {
+        InstrumentationRegistry.getInstrumentation().targetContext.openFileOutput("$filename.${format.name.lowercase()}", Context.MODE_PRIVATE).use {
             compress(format, quality, it)
         }
     }

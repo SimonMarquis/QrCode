@@ -21,7 +21,9 @@
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="barcode" />
 
-        <activity android:name=".multi.MultiDecoderActivity">
+        <activity
+            android:name=".multi.MultiDecoderActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -31,6 +33,7 @@
         <activity
             android:name=".single.SingleDecoderActivity"
             android:excludeFromRecents="true"
+            android:exported="true"
             android:label="@string/single_decoder_activity_label"
             android:noHistory="true"
             android:screenOrientation="behind"
