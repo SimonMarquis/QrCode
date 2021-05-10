@@ -9,10 +9,10 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.P
-import android.os.SystemClock
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.WorkerThread
+import androidx.camera.core.ImageProxy
 import androidx.exifinterface.media.ExifInterface
 import androidx.exifinterface.media.ExifInterface.*
 import com.google.android.gms.tasks.Tasks
@@ -21,48 +21,51 @@ import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.common.InputImage.IMAGE_FORMAT_NV21
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.multi.GenericMultipleBarcodeReader
 import fr.smarquis.qrcode.utils.TAG
-import io.fotoapparat.preview.Frame
+import java.nio.ByteBuffer
+import java.util.concurrent.TimeUnit.MILLISECONDS
 import kotlin.math.pow
+import kotlin.time.ExperimentalTime
+import kotlin.time.TimedValue
+import kotlin.time.measureTimedValue
 
 sealed class Decoder {
 
     companion object {
 
-        private fun centerX(frame: Frame): Double {
-            return when (frame.rotation) {
-                90, 270 -> frame.size.height * 0.5
-                else -> frame.size.width * 0.5
+        private fun ImageProxy.centerX(): Double {
+            return when (imageInfo.rotationDegrees) {
+                90, 270 -> height * 0.5
+                else -> width * 0.5
             }
         }
 
-        private fun centerY(frame: Frame): Double {
-            return when (frame.rotation) {
-                90, 270 -> frame.size.width * 0.5
-                else -> frame.size.height * 0.5
+        private fun ImageProxy.centerY(): Double {
+            return when (imageInfo.rotationDegrees) {
+                90, 270 -> width * 0.5
+                else -> height * 0.5
             }
         }
 
-        private fun distance(frame: Frame, rect: Rect): Double {
+        private fun ImageProxy.distance(rect: Rect): Double {
             val centerX = rect.exactCenterX().toDouble()
             val centerY = rect.exactCenterY().toDouble()
-            return distance(centerX(frame), centerX, centerY(frame), centerY)
+            return distance(centerX(), centerX, centerY(), centerY)
         }
 
-        private fun distance(frame: Frame, resultPoints: Array<out ResultPoint>): Double {
+        private fun ImageProxy.distance(resultPoints: Array<out ResultPoint>): Double {
             val centerX = resultPoints.map { it.x }.average()
             val centerY = resultPoints.map { it.y }.average()
-            return distance(centerX(frame), centerX, centerY(frame), centerY)
+            return distance(centerX(), centerX, centerY(), centerY)
         }
 
-        private fun distance(bitmap: Bitmap, resultPoints: Array<out ResultPoint>): Double {
+        private fun Bitmap.distance(resultPoints: Array<out ResultPoint>): Double {
             val centerX = resultPoints.map { it.x }.average()
             val centerY = resultPoints.map { it.y }.average()
-            return distance(bitmap.width * 0.5, centerX, bitmap.height * 0.5, centerY)
+            return distance(width * 0.5, centerX, height * 0.5, centerY)
         }
 
         private fun distance(x1: Double, x2: Double, y1: Double, y2: Double): Double {
@@ -75,11 +78,14 @@ sealed class Decoder {
 
     @Throws(java.lang.Exception::class)
     @WorkerThread
-    abstract fun decode(context: Context, frame: Frame): Barcode?
+    abstract fun decode(context: Context, imageProxy: ImageProxy): Barcode?
 
     @Throws(java.lang.Exception::class)
     @WorkerThread
     abstract fun decode(context: Context, uri: Uri): Barcode?
+
+    @ExperimentalTime
+    internal fun TimedValue<List<Barcode>>.log() = Log.d(TAG, "Found ${value.size} by ${name()} in ${duration.toString(MILLISECONDS)}")
 
     object MLKit : Decoder() {
 
@@ -91,27 +97,27 @@ sealed class Decoder {
             BarcodeScanning.getClient(BarcodeScannerOptions.Builder().setBarcodeFormats(FORMAT_ALL_FORMATS).build())
         }
 
-        override fun decode(context: Context, frame: Frame): Barcode? {
-            val start = SystemClock.elapsedRealtime()
-            val task = detector.process(InputImage.fromByteArray(frame.image, frame.size.width, frame.size.height, frame.rotation, IMAGE_FORMAT_NV21))
-            val results = Tasks.await(task)
-            val vision = results.minByOrNull {
-                distance(frame, it.boundingBox ?: return@minByOrNull Double.MAX_VALUE)
-            } ?: return null
-            val elapsed = SystemClock.elapsedRealtime() - start
-            Log.d(TAG, "Found ${results.size} by ${name()} in ${elapsed}ms")
-            return Barcode.parse(context, vision)
-        }
+        @ExperimentalTime
+        @androidx.camera.core.ExperimentalGetImage
+        override fun decode(context: Context, imageProxy: ImageProxy): Barcode? = measureTimedValue {
+            val image = imageProxy.image ?: return@measureTimedValue emptyList()
+            Tasks.await(detector.process(InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)))
+                .sortedBy {
+                    imageProxy.distance(it.boundingBox ?: return@sortedBy Double.MAX_VALUE)
+                }.map {
+                    Barcode.parse(context, it)
+                }
+        }.also { it.log() }.value.firstOrNull()
 
-        override fun decode(context: Context, uri: Uri): Barcode? {
-            val start = SystemClock.elapsedRealtime()
-            val task = detector.process(InputImage.fromFilePath(context, uri))
-            val results = Tasks.await(task)
-            val vision = results.firstOrNull() ?: return null
-            val elapsed = SystemClock.elapsedRealtime() - start
-            Log.d(TAG, "Found ${results.size} by ${name()} in ${elapsed}ms")
-            return Barcode.parse(context, vision)
-        }
+        @ExperimentalTime
+        override fun decode(context: Context, uri: Uri): Barcode? = measureTimedValue {
+            Tasks.await(detector.process(InputImage.fromFilePath(context, uri)))
+                .sortedByDescending {
+                    it.boundingBox?.run { width() * height() } ?: 0
+                }.map {
+                    Barcode.parse(context, it)
+                }
+        }.also { it.log() }.value.firstOrNull()
     }
 
     object ZXing : Decoder() {
@@ -120,30 +126,24 @@ sealed class Decoder {
 
         override fun name(): String = "ZXing"
 
-        override fun decode(context: Context, frame: Frame): Barcode? {
-            val start = SystemClock.elapsedRealtime()
-            val width = frame.size.width
-            val height = frame.size.height
-            val source = PlanarYUVLuminanceSource(frame.image, width, height, 0, 0, width, height, false)
+        @ExperimentalTime
+        @androidx.camera.core.ExperimentalGetImage
+        override fun decode(context: Context, imageProxy: ImageProxy): Barcode? = measureTimedValue {
+            val image = imageProxy.image ?: return null
+            val source = PlanarYUVLuminanceSource(image.planes[0].buffer.toByteArray(), image.width, image.height, 0, 0, image.width, image.height, false)
             val bitmap = BinaryBitmap(HybridBinarizer(source))
+            kotlin.runCatching {
+                multiReader.decodeMultiple(bitmap)
+                    .sortedBy {
+                        imageProxy.distance(it.resultPoints ?: return@sortedBy Double.MAX_VALUE)
+                    }.map {
+                        Barcode.parse(context, it)
+                    }
+            }.getOrDefault(emptyList())
+        }.also { it.log() }.value.firstOrNull()
 
-            try {
-                val results = multiReader.decodeMultiple(bitmap)
-                val result = results.minByOrNull {
-                    distance(frame, it.resultPoints ?: return@minByOrNull Double.MAX_VALUE)
-                } ?: return null
-                val elapsed = SystemClock.elapsedRealtime() - start
-                Log.d(TAG, "Found ${results.size} by ${name()} in ${elapsed}ms")
-                return Barcode.parse(context, result)
-            } catch (e: Exception) {
-                // Safe to ignore
-                // Empty result is reported as an Exception
-            }
-            return null
-        }
-
-        override fun decode(context: Context, uri: Uri): Barcode? {
-            val start = SystemClock.elapsedRealtime()
+        @ExperimentalTime
+        override fun decode(context: Context, uri: Uri): Barcode? = measureTimedValue {
             val original = if (SDK_INT >= P) {
                 ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri)) { decoder, _, _ -> decoder.allocator = ALLOCATOR_SOFTWARE }
             } else {
@@ -160,25 +160,16 @@ sealed class Decoder {
                     /*ORIENTATION_TRANSVERSE, ORIENTATION_TRANSPOSE*/ else -> original
                 }
             } ?: original
-            if (image != original) {
-                original.recycle()
-            }
-            try {
-                val results = multiReader.decodeMultiple(BinaryBitmap(HybridBinarizer(RGBLuminanceSource(image.width, image.height, image.pixels()))))
-                val result = results.minByOrNull {
-                    distance(image, it.resultPoints ?: return@minByOrNull Double.MAX_VALUE)
-                } ?: return null
-                val elapsed = SystemClock.elapsedRealtime() - start
-                Log.d(TAG, "Found ${results.size} by ${name()} in ${elapsed}ms")
-                return Barcode.parse(context, result)
-            } catch (e: Exception) {
-                // Safe to ignore
-                // Empty result is reported as an Exception
-            } finally {
-                image.recycle()
-            }
-            return null
-        }
+            if (image != original) original.recycle()
+            kotlin.runCatching {
+                multiReader.decodeMultiple(BinaryBitmap(HybridBinarizer(RGBLuminanceSource(image.width, image.height, image.pixels()))))
+                    .sortedBy {
+                        image.distance(it.resultPoints ?: return@sortedBy Double.MAX_VALUE)
+                    }.map {
+                        Barcode.parse(context, it)
+                    }
+            }.getOrDefault(emptyList()).also { image.recycle() }
+        }.also { it.log() }.value.firstOrNull()
 
         private fun Bitmap.rotate(degrees: Float): Bitmap {
             val matrix = Matrix().apply { postRotate(degrees) }
@@ -193,6 +184,12 @@ sealed class Decoder {
         private fun Bitmap.pixels(): IntArray = IntArray(width * height).apply {
             getPixels(this, 0, width, 0, 0, width, height)
         }
+
+        /**
+         * ByteBuffer is expected to already be [ByteBuffer.rewind]'ed.
+         */
+        private fun ByteBuffer.toByteArray(): ByteArray = ByteArray(capacity()).apply { get(this) }
+
     }
 
 }

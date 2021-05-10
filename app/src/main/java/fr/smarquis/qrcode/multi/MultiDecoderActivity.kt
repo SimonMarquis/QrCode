@@ -9,25 +9,29 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
-import android.view.ContextThemeWrapper
-import android.view.Gravity
-import android.view.MenuItem
-import android.view.SoundEffectConstants
+import android.view.*
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.camera.core.*
+import androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
+import androidx.camera.core.CameraSelector.DEFAULT_FRONT_CAMERA
+import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
-import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.content.ContextCompat.*
 import androidx.core.net.toUri
+import androidx.core.view.GestureDetectorCompat
 import androidx.lifecycle.Lifecycle.State.RESUMED
-import androidx.lifecycle.Observer
 import fr.smarquis.qrcode.R
 import fr.smarquis.qrcode.databinding.ActivityMultiDecoderBinding
 import fr.smarquis.qrcode.model.Decoder
@@ -36,12 +40,7 @@ import fr.smarquis.qrcode.model.Mode.MANUAL
 import fr.smarquis.qrcode.utils.TAG
 import fr.smarquis.qrcode.utils.copyToClipboard
 import fr.smarquis.qrcode.utils.safeStartIntent
-import io.fotoapparat.Fotoapparat
-import io.fotoapparat.configuration.CameraConfiguration
-import io.fotoapparat.log.logcat
-import io.fotoapparat.selector.back
-import io.fotoapparat.view.CameraView
-import io.fotoapparat.view.FocusView
+import java.util.concurrent.Executors
 
 
 class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
@@ -52,7 +51,9 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
 
     private lateinit var binding: ActivityMultiDecoderBinding
 
-    private lateinit var camera: Fotoapparat
+    private val cameraExecutor = Executors.newSingleThreadExecutor()
+
+    private var camera: Camera? = null
 
     private var toast: Toast? = null
 
@@ -72,12 +73,9 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
         if (!hasCameraPermission) requestCameraPermission()
     }
 
-    private val requestPermission: ActivityResultLauncher<String> = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+    private val requestPermission: ActivityResultLauncher<String> = registerForActivityResult(RequestPermission()) { isGranted: Boolean ->
         when {
-            isGranted -> {
-                viewModel.reset()
-                camera.start()
-            }
+            isGranted -> viewModel.reset()
             shouldShowRequestPermissionRationale(this, CAMERA) -> requestCameraPermission()
             else -> openAppDetailsSettings.launch()
         }
@@ -85,19 +83,14 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initUi()
+        initViewModel()
+        initTouchGestures()
+        initCameraProvider()
+    }
+
+    private fun initUi() {
         setContentView(ActivityMultiDecoderBinding.inflate(layoutInflater).also { binding = it }.root)
-        camera = Fotoapparat(
-            context = this,
-            view = findViewById<CameraView>(R.id.cameraView),
-            focusView = findViewById<FocusView>(R.id.focusView),
-            logger = logcat(),
-            lensPosition = back(),
-            cameraConfiguration = CameraConfiguration(frameProcessor = viewModel::processFrame),
-            cameraErrorCallback = {
-                Toast.makeText(this, it.message, Toast.LENGTH_LONG).apply { setGravity(Gravity.CENTER, 0, 0) }.show()
-                finish()
-            }
-        )
         binding.barcodeView.configure(
             onCollapsed = { viewModel.reset() },
             open = { safeStartIntent(this, it.intent) },
@@ -106,15 +99,13 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
                 applySettingsState(settings)
                 settings.show()
             })
-        binding.zoomView.configure(
-            zoom = { camera.setZoom(it) },
-            focus = binding.focusView
-        )
+    }
 
-        viewModel.barcode().observe(this, Observer {
+    private fun initViewModel() {
+        viewModel.barcode().observe(this) {
             if (it == null) {
                 binding.barcodeView.barcode = null
-                return@Observer
+                return@observe
             }
             Log.d(TAG, "onBarcode($it)")
             binding.coordinatorLayout.playSoundEffect(SoundEffectConstants.CLICK)
@@ -126,18 +117,60 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
                     }
                 }
             }
+        }
+    }
+
+    private fun initTouchGestures() {
+        val scaleDetector = ScaleGestureDetector(this, object : SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean = camera?.apply {
+                cameraControl.setZoomRatio((cameraInfo.zoomState.value?.zoomRatio ?: 0F) * detector.scaleFactor)
+            }.let { true }
         })
+        val meteringPointFactory = binding.preview.meteringPointFactory
+        val gestureDetector = GestureDetectorCompat(this, object : SimpleOnGestureListener() {
+            override fun onDown(e: MotionEvent): Boolean = camera?.cameraControl?.startFocusAndMetering(
+                FocusMeteringAction.Builder(meteringPointFactory.createPoint(e.x, e.y)).build()
+            ).let { super.onDown(e) }
+        })
+        binding.preview.setOnTouchListener { view: View, motionEvent: MotionEvent ->
+            scaleDetector.onTouchEvent(motionEvent)
+            gestureDetector.onTouchEvent(motionEvent)
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) view.performClick()
+            return@setOnTouchListener true
+        }
+    }
+
+    private fun ProcessCameraProvider.bind(): Camera {
+        val preview = Preview.Builder().build()
+        preview.setSurfaceProvider(binding.preview.surfaceProvider)
+        val imageAnalysis = ImageAnalysis.Builder()
+            .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+        imageAnalysis.setAnalyzer(cameraExecutor, { it.use(viewModel::processImage) })
+        unbindAll()
+        return bindToLifecycle(this@MultiDecoderActivity, cameraSelector(), preview, imageAnalysis)
+    }
+
+    private fun ProcessCameraProvider.cameraSelector() = listOf(DEFAULT_BACK_CAMERA, DEFAULT_FRONT_CAMERA).firstOrNull(::hasCamera) ?: CameraSelector.Builder().build()
+
+    private fun initCameraProvider() {
+        val future = ProcessCameraProvider.getInstance(this)
+        val listener = Runnable {
+            kotlin.runCatching {
+                future.get().bind()
+            }.onSuccess {
+                camera = it
+            }.onFailure {
+                Toast.makeText(this, it.message, Toast.LENGTH_LONG).apply { setGravity(Gravity.CENTER, 0, 0) }.show()
+                finish()
+            }
+        }
+        future.addListener(listener, getMainExecutor(this))
     }
 
     override fun onStart() {
         super.onStart()
-        if (hasCameraPermission()) camera.start()
-        else requestCameraPermission()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (hasCameraPermission()) camera.stop()
+        if (!hasCameraPermission()) requestCameraPermission()
     }
 
     private fun hasCameraPermission(): Boolean = checkSelfPermission(this, CAMERA) == PERMISSION_GRANTED
@@ -171,6 +204,12 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
     override fun onBackPressed() {
         if (viewModel.reset()) return
         super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
+        camera = null
     }
 
 }

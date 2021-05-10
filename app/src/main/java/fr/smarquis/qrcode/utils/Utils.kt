@@ -78,15 +78,11 @@ fun isSafeIntent(context: Context, intent: Intent?): Boolean {
 }
 
 fun safeStartIntent(context: Context, intent: Intent?): Boolean {
-    intent?.let {
-        it.resolveActivity(context.packageManager) ?: return false
-        try {
-            context.startActivity(it)
-            return true
-        } catch (e: Exception) {
-        }
-    }
-    return false
+    intent ?: return false
+    intent.resolveActivity(context.packageManager) ?: return false
+    return runCatching {
+        context.startActivity(intent)
+    }.isSuccess
 }
 
 fun copyToClipboard(context: Context, string: String?, toast: Toast? = null): Toast? {

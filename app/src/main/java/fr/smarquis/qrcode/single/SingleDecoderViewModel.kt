@@ -32,12 +32,12 @@ class SingleDecoderViewModel(application: Application, intent: Intent) : Android
     }
 
     private suspend fun decode(stream: Uri): Barcode? = withContext(Dispatchers.Default) {
-        try {
+        kotlin.runCatching {
             decoder.decode(stream)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    } as? Barcode
+        }.onFailure {
+            it.printStackTrace()
+        }.getOrNull()
+    }
 
     class Factory(activity: SingleDecoderActivity) : ViewModelProvider.Factory {
         private val application = activity.application

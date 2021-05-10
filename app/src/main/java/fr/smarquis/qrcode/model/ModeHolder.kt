@@ -27,11 +27,9 @@ class ModeHolder private constructor(application: Application) {
             Build.PRODUCT == "m300" || Build.MODEL == "M300" || Build.DEVICE == "vm300" -> true
             else -> false
         }
-        val extracted = try {
+        val extracted = kotlin.runCatching {
             Mode.valueOf(sharedPreferences.getString(SHARED_PREFERENCES_KEY, null).orEmpty())
-        } catch (e: Exception) {
-            null
-        }
+        }.getOrNull()
         reference = AtomicReference(
             when {
                 extracted != null -> extracted

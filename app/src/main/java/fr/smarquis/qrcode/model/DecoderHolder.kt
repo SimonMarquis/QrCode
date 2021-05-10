@@ -5,14 +5,11 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.WorkerThread
+import androidx.camera.core.ImageProxy
 import androidx.preference.PreferenceManager
 import fr.smarquis.qrcode.model.Decoder.MLKit
 import fr.smarquis.qrcode.model.Decoder.ZXing
-import fr.smarquis.qrcode.utils.Singleton
-import fr.smarquis.qrcode.utils.TAG
-import fr.smarquis.qrcode.utils.checkGooglePlayServices
-import fr.smarquis.qrcode.utils.isGooglePlayServicesAvailable
-import io.fotoapparat.preview.Frame
+import fr.smarquis.qrcode.utils.*
 import java.util.concurrent.atomic.AtomicReference
 
 class DecoderHolder private constructor(private val application: Application) {
@@ -42,8 +39,8 @@ class DecoderHolder private constructor(private val application: Application) {
 
     @Throws(java.lang.Exception::class)
     @WorkerThread
-    fun decode(frame: Frame): Barcode? {
-        return process(frame)
+    fun decode(imageProxy: ImageProxy): Barcode? {
+        return process(imageProxy)
     }
 
     @Throws(java.lang.Exception::class)
@@ -58,7 +55,7 @@ class DecoderHolder private constructor(private val application: Application) {
         reference.get().let {
             try {
                 return when (any) {
-                    is Frame -> it.decode(application, any)
+                    is ImageProxy -> it.decode(application, any)
                     is Uri -> it.decode(application, any)
                     else -> throw UnsupportedOperationException()
                 }

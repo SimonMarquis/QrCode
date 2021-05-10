@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="fr.smarquis.qrcode">
 
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -45,13 +50,14 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:mimeType="image/*"/>
-                <data android:scheme="file"/>
-                <data android:scheme="content"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="image/*" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
             </intent-filter>
         </activity>
 

@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.SystemClock
 import android.util.Log
 import androidx.annotation.WorkerThread
+import androidx.camera.core.ImageProxy
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +14,6 @@ import fr.smarquis.qrcode.model.Mode.AUTO
 import fr.smarquis.qrcode.model.Mode.MANUAL
 import fr.smarquis.qrcode.model.ModeHolder
 import fr.smarquis.qrcode.utils.TAG
-import io.fotoapparat.preview.Frame
 
 class MultiDecoderViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,13 +26,12 @@ class MultiDecoderViewModel(application: Application) : AndroidViewModel(applica
     fun barcode(): LiveData<Barcode?> = _barcode
 
     @WorkerThread
-    fun processFrame(frame: Frame) {
-        val decoded = try {
-            decoder.decode(frame)
-        } catch (e: Exception) {
-            Log.e(TAG, "processFrame()", e)
-        } as? Barcode ?: return
-        decoded.takeIf {
+    fun processImage(image: ImageProxy) {
+        kotlin.runCatching {
+            decoder.decode(image)
+        }.onFailure {
+            Log.e(TAG, "processImage()", it)
+        }.getOrNull()?.takeIf {
             when (mode.get()) {
                 MANUAL -> enoughTimeElapsed(_barcode.value, 500) && _barcode.value != it
                 AUTO -> enoughTimeElapsed(_barcode.value, 5000)

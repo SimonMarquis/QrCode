@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("com.google.gms.google-services")
+    kotlin("android.extensions")
 }
 
 val versionMajor = 1
@@ -13,7 +14,7 @@ android {
     compileSdk = 30
     defaultConfig {
         applicationId = "fr.smarquis.qrcode"
-        minSdk = 16
+        minSdk = 21
         targetSdk = 30
         versionCode = versionMajor * 1000000 + versionMinor * 10000 + versionPatch * 100 + versionBuild
         versionName = "$versionMajor.$versionMinor.$versionPatch"
@@ -56,6 +57,11 @@ dependencies {
     implementation(AndroidX.activity)
     implementation(AndroidX.appCompat)
     implementation(AndroidX.browser)
+    implementation(AndroidX.camera.core)
+    implementation(AndroidX.camera.camera2)
+    implementation(AndroidX.camera.lifecycle)
+    implementation(AndroidX.camera.view)
+    implementation(AndroidX.camera.extensions)
     implementation(AndroidX.constraintLayout)
     implementation(AndroidX.core.ktx)
     implementation(AndroidX.fragmentKtx)
@@ -68,9 +74,8 @@ dependencies {
 
     implementation(Google.Android.material)
     implementation(Google.Android.playServices.mlKit.vision.barcodeScanning)
-    implementation("com.google.zxing:core:3.4.1")
 
-    implementation("com.github.RedApparat:Fotoapparat:2.7.0")
+    implementation("com.google.zxing:core:3.4.1")
 
     androidTestImplementation(AndroidX.test.ext.junitKtx)
     androidTestImplementation(AndroidX.test.runner)

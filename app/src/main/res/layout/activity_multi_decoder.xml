@@ -7,23 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".multi.MultiDecoderActivity">
 
-    <io.fotoapparat.view.CameraView
-        android:id="@+id/cameraView"
+    <androidx.camera.view.PreviewView
+        android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:keepScreenOn="true">
-
-        <io.fotoapparat.view.FocusView
-            android:id="@+id/focusView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <fr.smarquis.qrcode.ui.ZoomView
-            android:id="@+id/zoomView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </io.fotoapparat.view.CameraView>
+        android:keepScreenOn="true" />
 
     <fr.smarquis.qrcode.ui.BarcodeView
         android:id="@+id/barcodeView"
