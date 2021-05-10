@@ -25,7 +25,8 @@ import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.multi.GenericMultipleBarcodeReader
 import fr.smarquis.qrcode.utils.TAG
-import java.nio.ByteBuffer
+import fr.smarquis.qrcode.utils.rotate
+import fr.smarquis.qrcode.utils.toLuminance
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import kotlin.math.pow
 import kotlin.time.ExperimentalTime
@@ -130,7 +131,8 @@ sealed class Decoder {
         @androidx.camera.core.ExperimentalGetImage
         override fun decode(context: Context, imageProxy: ImageProxy): Barcode? = measureTimedValue {
             val image = imageProxy.image ?: return null
-            val source = PlanarYUVLuminanceSource(image.planes[0].buffer.toByteArray(), image.width, image.height, 0, 0, image.width, image.height, false)
+            val luminancePlane = image.toLuminance().rotate(imageProxy.imageInfo.rotationDegrees)
+            val source = PlanarYUVLuminanceSource(luminancePlane.byteArray, luminancePlane.width, luminancePlane.height, 0, 0, luminancePlane.width, luminancePlane.height, false)
             val bitmap = BinaryBitmap(HybridBinarizer(source))
             kotlin.runCatching {
                 multiReader.decodeMultiple(bitmap)
@@ -184,11 +186,6 @@ sealed class Decoder {
         private fun Bitmap.pixels(): IntArray = IntArray(width * height).apply {
             getPixels(this, 0, width, 0, 0, width, height)
         }
-
-        /**
-         * ByteBuffer is expected to already be [ByteBuffer.rewind]'ed.
-         */
-        private fun ByteBuffer.toByteArray(): ByteArray = ByteArray(capacity()).apply { get(this) }
 
     }
 
