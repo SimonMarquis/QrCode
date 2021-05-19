@@ -3,13 +3,6 @@ package fr.smarquis.qrcode.ui
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.Color.BLACK
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.Q
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -58,7 +51,6 @@ class BarcodeView @JvmOverloads constructor(
         clipChildren = false
         orientation = VERTICAL
         with(binding) {
-            progressBar.indeterminateDrawable?.colorFilter = if (SDK_INT >= Q) BlendModeColorFilter(BLACK, BlendMode.SRC_IN) else PorterDuffColorFilter(BLACK, PorterDuff.Mode.SRC_IN)
             moreImageView.setOnClickListener { more?.invoke() }
             openImageView.setOnClickListener { barcode?.let { open(it) } }
             copyImageView.setOnClickListener { barcode?.let { copy(it) } }

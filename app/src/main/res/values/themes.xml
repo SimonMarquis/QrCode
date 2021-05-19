@@ -4,7 +4,9 @@
 
     <style name="Theme.App" parent="Base.Theme.App" />
 
-    <style name="Base.V1.Theme.App" parent="Theme.AppCompat.NoActionBar" />
+    <style name="Base.V1.Theme.App" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
     <style name="Base.Theme.App" parent="Base.V1.Theme.App" />
 
@@ -12,7 +14,7 @@
 
     <style name="Theme.Translucent" parent="Base.Theme.Translucent" />
 
-    <style name="Base.V1.Theme.Translucent" parent="Theme.AppCompat.NoActionBar">
+    <style name="Base.V1.Theme.Translucent" parent="Base.V1.Theme.App">
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowBackground">#00000000</item>
         <item name="android:windowIsTranslucent">true</item>

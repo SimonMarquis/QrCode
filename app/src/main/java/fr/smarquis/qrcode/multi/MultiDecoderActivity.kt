@@ -60,7 +60,7 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
     private val viewModel by viewModels<MultiDecoderViewModel>()
 
     private val settings by lazy {
-        PopupMenu(ContextThemeWrapper(this, R.style.PopupMenu), binding.barcodeView.anchor(), Gravity.END).apply {
+        PopupMenu(this, binding.barcodeView.anchor(), Gravity.END).apply {
             inflate(R.menu.menu_multi_decoder)
             setOnMenuItemClickListener(this@MultiDecoderActivity)
         }
