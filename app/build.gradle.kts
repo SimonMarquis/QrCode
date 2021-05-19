@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("com.google.gms.google-services")
-    kotlin("android.extensions")
 }
 
 val versionMajor = 1
