@@ -1,4 +1,4 @@
-package fr.smarquis.qrcode.multi
+package fr.smarquis.qrcode.ui.multi
 
 import android.os.SystemClock
 import android.util.Log
@@ -13,7 +13,6 @@ import fr.smarquis.qrcode.settings.DecoderHolder
 import fr.smarquis.qrcode.model.Mode.AUTO
 import fr.smarquis.qrcode.model.Mode.MANUAL
 import fr.smarquis.qrcode.settings.ModeHolder
-import fr.smarquis.qrcode.settings.ThemeHolder
 import fr.smarquis.qrcode.utils.TAG
 import javax.inject.Inject
 

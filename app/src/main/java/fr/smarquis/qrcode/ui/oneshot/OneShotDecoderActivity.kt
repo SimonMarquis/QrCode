@@ -1,4 +1,4 @@
-package fr.smarquis.qrcode.single
+package fr.smarquis.qrcode.ui.oneshot
 
 import android.os.Bundle
 import android.widget.Toast
@@ -16,15 +16,15 @@ import fr.smarquis.qrcode.utils.safeStartIntent
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SingleDecoderActivity : DecoderActivity() {
+class OneShotDecoderActivity : DecoderActivity() {
 
     private lateinit var binding: ActivitySingleDecoderBinding
 
     @Inject lateinit var mode: ModeHolder
 
-    @Inject lateinit var factory: SingleDecoderViewModel.Factory
+    @Inject lateinit var factory: OneShotDecoderViewModel.Factory
 
-    private val viewModel: SingleDecoderViewModel by viewModels { SingleDecoderViewModel.provideFactory(factory, intent) }
+    private val viewModel: OneShotDecoderViewModel by viewModels { OneShotDecoderViewModel.provideFactory(factory, intent) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

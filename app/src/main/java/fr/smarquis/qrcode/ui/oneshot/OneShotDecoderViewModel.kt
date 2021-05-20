@@ -1,4 +1,4 @@
-package fr.smarquis.qrcode.single
+package fr.smarquis.qrcode.ui.oneshot
 
 import android.content.Intent
 import android.net.Uri
@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 
 
 /*@HiltViewModel not compatible with @AssistedInject: https://github.com/google/dagger/issues/2287 */
-class SingleDecoderViewModel @AssistedInject constructor(
+class OneShotDecoderViewModel @AssistedInject constructor(
     private val decoder: DecoderHolder,
     @Assisted intent: Intent,
 ) : ViewModel() {
@@ -45,7 +45,7 @@ class SingleDecoderViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(intent: Intent): SingleDecoderViewModel
+        fun create(intent: Intent): OneShotDecoderViewModel
     }
 
     companion object {

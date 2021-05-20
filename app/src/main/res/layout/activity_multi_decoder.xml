@@ -5,7 +5,7 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".multi.MultiDecoderActivity">
+    tools:context=".ui.multi.MultiDecoderActivity">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/preview"

@@ -1,4 +1,4 @@
-package fr.smarquis.qrcode.multi
+package fr.smarquis.qrcode.ui.multi
 
 import android.Manifest.permission.CAMERA
 import android.content.Context

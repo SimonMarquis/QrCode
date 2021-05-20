@@ -28,7 +28,7 @@
             android:value="barcode" />
 
         <activity
-            android:name=".multi.MultiDecoderActivity"
+            android:name="fr.smarquis.qrcode.ui.multi.MultiDecoderActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,7 +37,7 @@
         </activity>
 
         <activity
-            android:name=".single.SingleDecoderActivity"
+            android:name="fr.smarquis.qrcode.ui.oneshot.OneShotDecoderActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/single_decoder_activity_label"
