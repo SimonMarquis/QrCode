@@ -65,6 +65,7 @@ dependencies {
     implementation(AndroidX.camera.extensions)
     implementation(AndroidX.constraintLayout)
     implementation(AndroidX.core.ktx)
+    implementation(AndroidX.dataStore.preferences)
     implementation(AndroidX.fragmentKtx)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.runtimeKtx)

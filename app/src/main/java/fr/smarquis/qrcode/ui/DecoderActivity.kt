@@ -3,17 +3,22 @@ package fr.smarquis.qrcode.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import fr.smarquis.qrcode.settings.ThemeHolder
-import javax.inject.Inject
+import fr.smarquis.qrcode.model.Theme
+import fr.smarquis.qrcode.settings.ThemeSetting
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
-open class DecoderActivity: AppCompatActivity() {
+open class DecoderActivity : AppCompatActivity() {
 
-    @Inject
-    protected lateinit var nightMode: ThemeHolder
+    lateinit var customTheme: Theme
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setDefaultNightMode(nightMode.get().value)
+        customTheme = runBlocking {
+            ThemeSetting.get(this@DecoderActivity).first()
+        }.also {
+            AppCompatDelegate.setDefaultNightMode(it.value)
+        }
     }
 
 }

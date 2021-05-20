@@ -32,19 +32,24 @@ import androidx.core.net.toUri
 import androidx.core.view.GestureDetectorCompat
 import androidx.lifecycle.Lifecycle.State.CREATED
 import androidx.lifecycle.Lifecycle.State.RESUMED
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import fr.smarquis.qrcode.R
-import fr.smarquis.qrcode.ui.DecoderActivity
 import fr.smarquis.qrcode.databinding.ActivityMultiDecoderBinding
 import fr.smarquis.qrcode.model.Decoder
 import fr.smarquis.qrcode.model.Mode.AUTO
 import fr.smarquis.qrcode.model.Mode.MANUAL
+import fr.smarquis.qrcode.model.Theme
 import fr.smarquis.qrcode.model.Theme.DARK
 import fr.smarquis.qrcode.model.Theme.LIGHT
 import fr.smarquis.qrcode.model.Theme.SYSTEM
+import fr.smarquis.qrcode.settings.Settings
+import fr.smarquis.qrcode.settings.ThemeSetting
+import fr.smarquis.qrcode.ui.DecoderActivity
 import fr.smarquis.qrcode.utils.TAG
 import fr.smarquis.qrcode.utils.copyToClipboard
 import fr.smarquis.qrcode.utils.safeStartIntent
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 @AndroidEntryPoint
@@ -64,7 +69,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
 
     private val viewModel by viewModels<MultiDecoderViewModel>()
 
-    private val settings by lazy {
+    private val more by lazy {
         PopupMenu(this, binding.barcodeView.anchor(), Gravity.END).apply {
             inflate(R.menu.menu_multi_decoder)
             setOnMenuItemClickListener(this@MultiDecoderActivity)
@@ -101,8 +106,8 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
             open = { safeStartIntent(this, it.intent) },
             copy = { toast = copyToClipboard(this, it.value, toast) },
             more = {
-                applySettingsState(settings)
-                settings.show()
+                applySettingsState(more)
+                more.show()
             })
     }
 
@@ -193,7 +198,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
                 AUTO -> findItem(R.id.menu_item_mode_auto).isChecked = true
                 MANUAL -> findItem(R.id.menu_item_mode_manual).isChecked = true
             }
-            when (nightMode.get()) {
+            when (customTheme) {
                 SYSTEM -> findItem(R.id.menu_item_theme_system).isChecked = true
                 DARK -> findItem(R.id.menu_item_theme_dark).isChecked = true
                 LIGHT -> findItem(R.id.menu_item_theme_light).isChecked = true
@@ -207,12 +212,18 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
             R.id.menu_item_scanner_zxing -> viewModel.decoder.set(Decoder.ZXing)
             R.id.menu_item_mode_auto -> viewModel.mode.set(AUTO).also { viewModel.reset() }
             R.id.menu_item_mode_manual -> viewModel.mode.set(MANUAL).also { viewModel.reset() }
-            R.id.menu_item_theme_system -> nightMode.set(SYSTEM).also { recreate() }
-            R.id.menu_item_theme_dark -> nightMode.set(DARK).also { recreate() }
-            R.id.menu_item_theme_light -> nightMode.set(LIGHT).also { recreate() }
+            R.id.menu_item_theme_system -> updateTheme(SYSTEM)
+            R.id.menu_item_theme_dark -> updateTheme(DARK)
+            R.id.menu_item_theme_light -> updateTheme(LIGHT)
             R.id.menu_item_generator -> CUSTOM_TABS_INTENT.launchUrl(this, getString(R.string.webapp).toUri()).let { true }
             else -> true
-        }.also { applySettingsState(settings) }
+        }.also { applySettingsState(more) }
+
+    private fun updateTheme(theme: Theme) = lifecycleScope.launch {
+        if (customTheme == theme) return@launch
+        ThemeSetting.set(this@MultiDecoderActivity, theme)
+        recreate()
+    }.let { customTheme != theme }
 
     override fun onBackPressed() {
         if (viewModel.reset()) return
