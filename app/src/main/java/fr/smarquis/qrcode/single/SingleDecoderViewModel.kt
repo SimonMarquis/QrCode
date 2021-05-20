@@ -1,21 +1,25 @@
 package fr.smarquis.qrcode.single
 
-import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import fr.smarquis.qrcode.model.Barcode
 import fr.smarquis.qrcode.model.DecoderHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class SingleDecoderViewModel(application: Application, intent: Intent) : AndroidViewModel(application) {
 
-    private val decoder: DecoderHolder = DecoderHolder.instance(application)
+/*@HiltViewModel not compatible with @AssistedInject: https://github.com/google/dagger/issues/2287 */
+class SingleDecoderViewModel @AssistedInject constructor(
+    private val decoder: DecoderHolder,
+    @Assisted intent: Intent,
+) : ViewModel() {
 
     val barcode: LiveData<Barcode?> = liveData {
         when (intent.action) {
@@ -39,12 +43,18 @@ class SingleDecoderViewModel(application: Application, intent: Intent) : Android
         }.getOrNull()
     }
 
-    class Factory(activity: SingleDecoderActivity) : ViewModelProvider.Factory {
-        private val application = activity.application
-        private val intent = activity.intent
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    @AssistedFactory
+    interface Factory {
+        fun create(intent: Intent): SingleDecoderViewModel
+    }
+
+    companion object {
+        fun provideFactory(
+            assistedFactory: Factory,
+            intent: Intent,
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
-            return SingleDecoderViewModel(application, intent) as T
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T = assistedFactory.create(intent) as T
         }
     }
 

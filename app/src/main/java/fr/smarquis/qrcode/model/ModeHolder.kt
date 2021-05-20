@@ -1,26 +1,29 @@
 package fr.smarquis.qrcode.model
 
-import android.app.Application
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
-import androidx.preference.PreferenceManager
-import fr.smarquis.qrcode.utils.Singleton
+import dagger.hilt.android.qualifiers.ApplicationContext
 import fr.smarquis.qrcode.utils.TAG
 import java.util.concurrent.atomic.AtomicReference
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ModeHolder private constructor(application: Application) {
+@Singleton
+class ModeHolder @Inject constructor(
+    @ApplicationContext private val appContext: Context,
+    private val sharedPreferences: SharedPreferences,
+) {
 
-    companion object : Singleton<ModeHolder, Application>(::ModeHolder) {
+    companion object {
         private const val SHARED_PREFERENCES_KEY = "mode"
     }
-
-    private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     private val reference: AtomicReference<Mode>
 
     init {
-        val hasTouchScreen = application.packageManager.hasSystemFeature("android.hardware.touchscreen").also {
+        val hasTouchScreen = appContext.packageManager.hasSystemFeature("android.hardware.touchscreen").also {
             Log.d(TAG, "hasSystemFeature(\"android.hardware.touchscreen\") -> $it")
         }
         val forceAuto = when {

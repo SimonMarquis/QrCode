@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
 }
 
@@ -71,6 +73,9 @@ dependencies {
     implementation(AndroidX.preferenceKtx)
     implementation(AndroidX.transition)
 
+    implementation(Google.Dagger.Hilt.android)
+    kapt(Google.dagger.hilt.compiler)
+
     implementation(Google.Android.material)
     implementation(Google.Android.playServices.mlKit.vision.barcodeScanning)
 
@@ -81,4 +86,8 @@ dependencies {
 
     /* JUnit */
     testImplementation(Testing.junit4)
+}
+
+kapt {
+    correctErrorTypes = true
 }

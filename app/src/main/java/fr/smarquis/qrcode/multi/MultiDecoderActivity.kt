@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat.*
 import androidx.core.net.toUri
 import androidx.core.view.GestureDetectorCompat
 import androidx.lifecycle.Lifecycle.State.RESUMED
+import dagger.hilt.android.AndroidEntryPoint
 import fr.smarquis.qrcode.R
 import fr.smarquis.qrcode.databinding.ActivityMultiDecoderBinding
 import fr.smarquis.qrcode.model.Decoder
@@ -42,7 +43,7 @@ import fr.smarquis.qrcode.utils.copyToClipboard
 import fr.smarquis.qrcode.utils.safeStartIntent
 import java.util.concurrent.Executors
 
-
+@AndroidEntryPoint
 class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     companion object {

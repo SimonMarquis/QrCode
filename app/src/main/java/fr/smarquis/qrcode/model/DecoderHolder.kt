@@ -1,30 +1,36 @@
 package fr.smarquis.qrcode.model
 
-import android.app.Application
+import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.camera.core.ImageProxy
-import androidx.preference.PreferenceManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import fr.smarquis.qrcode.model.Decoder.MLKit
 import fr.smarquis.qrcode.model.Decoder.ZXing
-import fr.smarquis.qrcode.utils.*
+import fr.smarquis.qrcode.utils.TAG
+import fr.smarquis.qrcode.utils.checkGooglePlayServices
+import fr.smarquis.qrcode.utils.isGooglePlayServicesAvailable
 import java.util.concurrent.atomic.AtomicReference
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DecoderHolder private constructor(private val application: Application) {
+@Singleton
+class DecoderHolder @Inject constructor(
+    @ApplicationContext private val appContext: Context,
+    private val sharedPreferences: SharedPreferences,
+) {
 
-    companion object : Singleton<DecoderHolder, Application>(::DecoderHolder) {
+    companion object {
         private const val SHARED_PREFERENCES_KEY = "decoder"
     }
 
     private val reference: AtomicReference<Decoder>
 
-    private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-
     init {
-        checkGooglePlayServices(application)
-        MLKit.isAvailable = isGooglePlayServicesAvailable(application)
+        checkGooglePlayServices(appContext)
+        MLKit.isAvailable = isGooglePlayServicesAvailable(appContext)
         val nameToRestore = sharedPreferences.getString(SHARED_PREFERENCES_KEY, null)
         reference = AtomicReference(
             when {
@@ -55,8 +61,8 @@ class DecoderHolder private constructor(private val application: Application) {
         reference.get().let {
             try {
                 return when (any) {
-                    is ImageProxy -> it.decode(application, any)
-                    is Uri -> it.decode(application, any)
+                    is ImageProxy -> it.decode(appContext, any)
+                    is Uri -> it.decode(appContext, any)
                     else -> throw UnsupportedOperationException()
                 }
             } catch (e: Exception) {

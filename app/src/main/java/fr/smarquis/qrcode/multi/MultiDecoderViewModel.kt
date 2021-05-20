@@ -1,25 +1,26 @@
 package fr.smarquis.qrcode.multi
 
-import android.app.Application
 import android.os.SystemClock
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.camera.core.ImageProxy
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.smarquis.qrcode.model.Barcode
 import fr.smarquis.qrcode.model.DecoderHolder
 import fr.smarquis.qrcode.model.Mode.AUTO
 import fr.smarquis.qrcode.model.Mode.MANUAL
 import fr.smarquis.qrcode.model.ModeHolder
 import fr.smarquis.qrcode.utils.TAG
+import javax.inject.Inject
 
-class MultiDecoderViewModel(application: Application) : AndroidViewModel(application) {
-
-    val decoder: DecoderHolder = DecoderHolder.instance(application)
-
-    val mode: ModeHolder = ModeHolder.instance(application)
+@HiltViewModel
+class MultiDecoderViewModel @Inject constructor(
+    val decoder: DecoderHolder,
+    val mode: ModeHolder,
+) : ViewModel() {
 
     private val _barcode: MutableLiveData<Barcode?> = MutableLiveData(null)
 
