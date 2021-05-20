@@ -1,10 +1,11 @@
-package fr.smarquis.qrcode.model
+package fr.smarquis.qrcode.settings
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
+import fr.smarquis.qrcode.model.Mode
 import fr.smarquis.qrcode.utils.TAG
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject

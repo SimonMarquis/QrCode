@@ -10,7 +10,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import fr.smarquis.qrcode.model.Barcode
-import fr.smarquis.qrcode.model.DecoderHolder
+import fr.smarquis.qrcode.settings.DecoderHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

@@ -18,7 +18,6 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.activity.result.launch
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
@@ -31,20 +30,25 @@ import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat.*
 import androidx.core.net.toUri
 import androidx.core.view.GestureDetectorCompat
+import androidx.lifecycle.Lifecycle.State.CREATED
 import androidx.lifecycle.Lifecycle.State.RESUMED
 import dagger.hilt.android.AndroidEntryPoint
 import fr.smarquis.qrcode.R
+import fr.smarquis.qrcode.ui.DecoderActivity
 import fr.smarquis.qrcode.databinding.ActivityMultiDecoderBinding
 import fr.smarquis.qrcode.model.Decoder
 import fr.smarquis.qrcode.model.Mode.AUTO
 import fr.smarquis.qrcode.model.Mode.MANUAL
+import fr.smarquis.qrcode.model.Theme.DARK
+import fr.smarquis.qrcode.model.Theme.LIGHT
+import fr.smarquis.qrcode.model.Theme.SYSTEM
 import fr.smarquis.qrcode.utils.TAG
 import fr.smarquis.qrcode.utils.copyToClipboard
 import fr.smarquis.qrcode.utils.safeStartIntent
 import java.util.concurrent.Executors
 
 @AndroidEntryPoint
-class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
+class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListener {
 
     companion object {
         private val CUSTOM_TABS_INTENT = CustomTabsIntent.Builder().setDefaultColorSchemeParams(CustomTabColorSchemeParams.Builder().setToolbarColor(BLACK).build()).build()
@@ -158,7 +162,7 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
         val future = ProcessCameraProvider.getInstance(this)
         val listener = Runnable {
             kotlin.runCatching {
-                future.get().bind()
+                future.get().takeIf { lifecycle.currentState.isAtLeast(CREATED) }?.bind()
             }.onSuccess {
                 camera = it
             }.onFailure {
@@ -189,6 +193,11 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
                 AUTO -> findItem(R.id.menu_item_mode_auto).isChecked = true
                 MANUAL -> findItem(R.id.menu_item_mode_manual).isChecked = true
             }
+            when (nightMode.get()) {
+                SYSTEM -> findItem(R.id.menu_item_theme_system).isChecked = true
+                DARK -> findItem(R.id.menu_item_theme_dark).isChecked = true
+                LIGHT -> findItem(R.id.menu_item_theme_light).isChecked = true
+            }
         }
     }
 
@@ -198,6 +207,9 @@ class MultiDecoderActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListe
             R.id.menu_item_scanner_zxing -> viewModel.decoder.set(Decoder.ZXing)
             R.id.menu_item_mode_auto -> viewModel.mode.set(AUTO).also { viewModel.reset() }
             R.id.menu_item_mode_manual -> viewModel.mode.set(MANUAL).also { viewModel.reset() }
+            R.id.menu_item_theme_system -> nightMode.set(SYSTEM).also { recreate() }
+            R.id.menu_item_theme_dark -> nightMode.set(DARK).also { recreate() }
+            R.id.menu_item_theme_light -> nightMode.set(LIGHT).also { recreate() }
             R.id.menu_item_generator -> CUSTOM_TABS_INTENT.launchUrl(this, getString(R.string.webapp).toUri()).let { true }
             else -> true
         }.also { applySettingsState(settings) }

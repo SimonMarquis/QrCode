@@ -9,10 +9,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fr.smarquis.qrcode.model.Barcode
-import fr.smarquis.qrcode.model.DecoderHolder
+import fr.smarquis.qrcode.settings.DecoderHolder
 import fr.smarquis.qrcode.model.Mode.AUTO
 import fr.smarquis.qrcode.model.Mode.MANUAL
-import fr.smarquis.qrcode.model.ModeHolder
+import fr.smarquis.qrcode.settings.ModeHolder
+import fr.smarquis.qrcode.settings.ThemeHolder
 import fr.smarquis.qrcode.utils.TAG
 import javax.inject.Inject
 

@@ -3,20 +3,20 @@ package fr.smarquis.qrcode.single
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import fr.smarquis.qrcode.R
+import fr.smarquis.qrcode.ui.DecoderActivity
 import fr.smarquis.qrcode.databinding.ActivitySingleDecoderBinding
 import fr.smarquis.qrcode.model.Barcode
 import fr.smarquis.qrcode.model.Mode.AUTO
 import fr.smarquis.qrcode.model.Mode.MANUAL
-import fr.smarquis.qrcode.model.ModeHolder
+import fr.smarquis.qrcode.settings.ModeHolder
 import fr.smarquis.qrcode.utils.copyToClipboard
 import fr.smarquis.qrcode.utils.safeStartIntent
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SingleDecoderActivity : AppCompatActivity() {
+class SingleDecoderActivity : DecoderActivity() {
 
     private lateinit var binding: ActivitySingleDecoderBinding
 

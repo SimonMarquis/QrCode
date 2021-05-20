@@ -1,4 +1,4 @@
-package fr.smarquis.qrcode.model
+package fr.smarquis.qrcode.settings
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -7,6 +7,8 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.camera.core.ImageProxy
 import dagger.hilt.android.qualifiers.ApplicationContext
+import fr.smarquis.qrcode.model.Barcode
+import fr.smarquis.qrcode.model.Decoder
 import fr.smarquis.qrcode.model.Decoder.MLKit
 import fr.smarquis.qrcode.model.Decoder.ZXing
 import fr.smarquis.qrcode.utils.TAG

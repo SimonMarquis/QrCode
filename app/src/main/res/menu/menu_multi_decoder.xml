@@ -29,6 +29,23 @@
         </menu>
     </item>
     <item
+        android:id="@+id/menu_item_theme"
+        android:title="@string/menu_item_theme">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/menu_item_theme_system"
+                    android:title="@string/menu_item_theme_system" />
+                <item
+                    android:id="@+id/menu_item_theme_dark"
+                    android:title="@string/menu_item_theme_dark" />
+                <item
+                    android:id="@+id/menu_item_theme_light"
+                    android:title="@string/menu_item_theme_light" />
+            </group>
+        </menu>
+    </item>
+    <item
         android:id="@+id/menu_item_generator"
         android:title="@string/menu_item_generator" />
 </menu>
