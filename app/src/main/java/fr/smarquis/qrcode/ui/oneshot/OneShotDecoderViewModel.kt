@@ -1,7 +1,6 @@
 package fr.smarquis.qrcode.ui.oneshot
 
 import android.content.Intent
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -9,19 +8,16 @@ import androidx.lifecycle.liveData
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import fr.smarquis.qrcode.model.Barcode
-import fr.smarquis.qrcode.settings.DecoderHolder
 import fr.smarquis.qrcode.settings.SettingsRepository
 import fr.smarquis.qrcode.ui.oneshot.OneShotResult.Found
 import fr.smarquis.qrcode.ui.oneshot.OneShotResult.NotFound
-import kotlinx.coroutines.Dispatchers
+import fr.smarquis.qrcode.utils.DecoderDispatcher
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withContext
 
 
 /*@HiltViewModel not compatible with @AssistedInject: https://github.com/google/dagger/issues/2287 */
 class OneShotDecoderViewModel @AssistedInject constructor(
-    private val decoder: DecoderHolder,
+    private val decoder: DecoderDispatcher,
     private val settings: SettingsRepository,
     @Assisted intent: Intent,
 ) : ViewModel() {
@@ -34,21 +30,13 @@ class OneShotDecoderViewModel @AssistedInject constructor(
         }.takeIf {
             intent.type?.startsWith("image/") == true
         }?.let {
-            decode(it)
+            decoder.decode(it).getOrNull()
         }.let {
             if (it == null) NotFound
             else Found(it, settings.mode.first())
         }.let {
             emit(it)
         }
-    }
-
-    private suspend fun decode(stream: Uri): Barcode? = withContext(Dispatchers.Default) {
-        kotlin.runCatching {
-            decoder.decode(stream)
-        }.onFailure {
-            it.printStackTrace()
-        }.getOrNull()
     }
 
     @AssistedFactory
