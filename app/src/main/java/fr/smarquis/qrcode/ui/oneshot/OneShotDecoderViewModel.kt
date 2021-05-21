@@ -30,7 +30,7 @@ class OneShotDecoderViewModel @AssistedInject constructor(
         }.takeIf {
             intent.type?.startsWith("image/") == true
         }?.let {
-            decoder.decode(it).getOrNull()
+            decoder.decode(it)
         }.let {
             if (it == null) NotFound
             else Found(it, settings.mode.first())

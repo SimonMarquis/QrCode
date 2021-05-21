@@ -59,7 +59,7 @@ class MultiDecoderViewModel @Inject constructor(
 
     @WorkerThread
     fun processImage(image: ImageProxy) = runBlocking {
-        decoder.decode(image).getOrNull()?.takeIf {
+        decoder.decode(image)?.takeIf {
             when (settings.mode.first()) {
                 MANUAL -> enoughTimeElapsed(barcode(), 500) && _results.value != it
                 AUTO -> enoughTimeElapsed(barcode(), 5000)
