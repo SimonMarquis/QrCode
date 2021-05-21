@@ -37,7 +37,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     lint {
-        disable("UnsafeExperimentalUsageWarning")
+        disable("UnsafeExperimentalUsageWarning", "GradleDependency")
     }
     testOptions {
         unitTests {
@@ -82,7 +82,7 @@ dependencies {
     implementation(KotlinX.coroutines.core)
     implementation(KotlinX.coroutines.playServices)
 
-    implementation("com.google.zxing:core:3.4.1")
+    implementation("com.google.zxing:core:_")
 
     testImplementation(AndroidX.archCore.testing)
     testImplementation(AndroidX.test.core)
