@@ -25,7 +25,7 @@ class DecoderDispatcher @Inject constructor(
 
     suspend fun decode(any: Any): Barcode? = decodeInternal(any).getOrNull()
 
-    // Direcly exposing Result<Barcode?> fails the tests:
+    // Directly exposing Result<Barcode?> fails the tests:
     // `class kotlin.Result cannot be cast to class Barcode`.
     // see: https://youtrack.jetbrains.com/issue/KT-45259
     @VisibleForTesting
