@@ -35,13 +35,13 @@ class DecoderDispatcher @Inject constructor(
         }.onFailure {
             it.printStackTrace()
         }.recoverCatching {
+            if (it is UnsupportedOperationException) throw it
             when (this) {
-                MLKit -> {
-                    isAvailable = false
+                is MLKit -> {
                     settings.decoder(ZXing)
                     return decode(any)
                 }
-                ZXing -> throw it
+                is ZXing -> throw it
             }
         }
     }

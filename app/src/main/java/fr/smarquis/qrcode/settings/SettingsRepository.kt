@@ -1,6 +1,7 @@
 package fr.smarquis.qrcode.settings
 
 import android.content.Context
+import androidx.datastore.preferences.core.Preferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import fr.smarquis.qrcode.model.Decoder
 import fr.smarquis.qrcode.model.Mode
@@ -13,9 +14,12 @@ import javax.inject.Singleton
 class SettingsRepository @Inject constructor(@ApplicationContext val appContext: Context) {
 
     val mode: Flow<Mode> = ModeSetting.get(appContext)
-    val theme: Flow<Theme> =  ThemeSetting.get(appContext)
+    suspend fun mode(mode: Mode) = ModeSetting.set(appContext, mode)
 
-    val decoder: Flow<Decoder> =  DecoderSetting.get(appContext)
-    suspend fun decoder(decoder: Decoder) =  DecoderSetting.set(appContext, decoder)
+    val theme: Flow<Theme> = ThemeSetting.get(appContext)
+    suspend fun theme(theme: Theme) = ThemeSetting.set(appContext, theme)
+
+    val decoder: Flow<Decoder> = DecoderSetting.get(appContext)
+    suspend fun decoder(decoder: Decoder) = DecoderSetting.set(appContext, decoder)
 
 }

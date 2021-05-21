@@ -32,24 +32,21 @@ import androidx.core.net.toUri
 import androidx.core.view.GestureDetectorCompat
 import androidx.lifecycle.Lifecycle.State.CREATED
 import androidx.lifecycle.Lifecycle.State.RESUMED
-import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import fr.smarquis.qrcode.R
 import fr.smarquis.qrcode.databinding.ActivityMultiDecoderBinding
-import fr.smarquis.qrcode.model.Decoder
+import fr.smarquis.qrcode.model.Decoder.MLKit
+import fr.smarquis.qrcode.model.Decoder.ZXing
 import fr.smarquis.qrcode.model.Mode.AUTO
 import fr.smarquis.qrcode.model.Mode.MANUAL
-import fr.smarquis.qrcode.model.Theme
 import fr.smarquis.qrcode.model.Theme.DARK
 import fr.smarquis.qrcode.model.Theme.LIGHT
 import fr.smarquis.qrcode.model.Theme.SYSTEM
-import fr.smarquis.qrcode.settings.Settings
-import fr.smarquis.qrcode.settings.ThemeSetting
 import fr.smarquis.qrcode.ui.DecoderActivity
+import fr.smarquis.qrcode.ui.multi.Event.*
 import fr.smarquis.qrcode.utils.TAG
 import fr.smarquis.qrcode.utils.copyToClipboard
 import fr.smarquis.qrcode.utils.safeStartIntent
-import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 @AndroidEntryPoint
@@ -68,13 +65,6 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
     private var toast: Toast? = null
 
     private val viewModel by viewModels<MultiDecoderViewModel>()
-
-    private val more by lazy {
-        PopupMenu(this, binding.barcodeView.anchor(), Gravity.END).apply {
-            inflate(R.menu.menu_multi_decoder)
-            setOnMenuItemClickListener(this@MultiDecoderActivity)
-        }
-    }
 
     private val openAppDetailsSettings: ActivityResultLauncher<Void?> = registerForActivityResult(object : ActivityResultContract<Void?, Boolean>() {
         override fun createIntent(context: Context, input: Void?): Intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null))
@@ -102,33 +92,71 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
     private fun initUi() {
         setContentView(ActivityMultiDecoderBinding.inflate(layoutInflater).also { binding = it }.root)
         binding.barcodeView.configure(
-            onCollapsed = { viewModel.reset() },
+            onCollapsed = viewModel::reset,
             open = { safeStartIntent(this, it.intent) },
             copy = { toast = copyToClipboard(this, it.value, toast) },
-            more = {
-                applySettingsState(more)
-                more.show()
-            })
+            more = viewModel::requestShowMore,
+        )
     }
 
     private fun initViewModel() {
-        viewModel.barcode().observe(this) {
-            if (it == null) {
-                binding.barcodeView.barcode = null
-                return@observe
-            }
-            Log.d(TAG, "onBarcode($it)")
-            binding.coordinatorLayout.playSoundEffect(SoundEffectConstants.CLICK)
-            when (viewModel.mode.get()) {
-                MANUAL -> binding.barcodeView.barcode = it
-                AUTO -> {
-                    if (lifecycle.currentState.isAtLeast(RESUMED) && !safeStartIntent(this, it.intent)) {
-                        toast = copyToClipboard(this, it.value, toast)
-                    }
+        viewModel.results.observe(this, ::onResults)
+        viewModel.events.observe(this, ::onEvents)
+    }
+
+    //region Results
+    private fun onResults(result: MultiResult) = when (result) {
+        is MultiResult.Found -> onMultiResultFound(result)
+        MultiResult.Empty -> onMultiResultNotFound()
+    }
+
+    private fun onMultiResultFound(result: MultiResult.Found) {
+        val (barcode, mode) = result
+        Log.d(TAG, "onBarcode($barcode)")
+        binding.coordinatorLayout.playSoundEffect(SoundEffectConstants.CLICK)
+        when (mode) {
+            MANUAL -> binding.barcodeView.barcode = barcode
+            AUTO -> {
+                if (lifecycle.currentState.isAtLeast(RESUMED) && !safeStartIntent(this, barcode.intent)) {
+                    toast = copyToClipboard(this, barcode.value, toast)
                 }
             }
         }
     }
+
+    private fun onMultiResultNotFound() {
+        binding.barcodeView.barcode = null
+    }
+    //endregion
+
+    //region Events
+    private fun onEvents(event: Event) = when (event) {
+        is ShowMore -> showMore(event)
+        Finish -> finish()
+        Recreate -> recreate()
+    }
+
+    private fun showMore(event: ShowMore) = PopupMenu(this, binding.barcodeView.anchor(), Gravity.END).apply {
+        inflate(R.menu.menu_multi_decoder)
+        setOnMenuItemClickListener(this@MultiDecoderActivity)
+        menu.apply {
+            findItem(R.id.menu_item_scanner_mlkit).isEnabled = MLKit.isAvailable
+            when (event.decoder) {
+                MLKit -> R.id.menu_item_scanner_mlkit
+                ZXing -> R.id.menu_item_scanner_zxing
+            }.let(::findItem).check()
+            when (event.mode) {
+                AUTO -> R.id.menu_item_mode_auto
+                MANUAL -> R.id.menu_item_mode_manual
+            }.let(::findItem).check()
+            when (event.theme) {
+                SYSTEM -> R.id.menu_item_theme_system
+                DARK -> R.id.menu_item_theme_dark
+                LIGHT -> R.id.menu_item_theme_light
+            }.let(::findItem).check()
+        }
+    }.show()
+    //endregion
 
     private fun initTouchGestures() {
         val scaleDetector = ScaleGestureDetector(this, object : SimpleOnScaleGestureListener() {
@@ -150,6 +178,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
         }
     }
 
+    //region Camera
     private fun ProcessCameraProvider.bind(): Camera {
         val preview = Preview.Builder().build()
         preview.setSurfaceProvider(binding.preview.surfaceProvider)
@@ -178,56 +207,32 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
         future.addListener(listener, getMainExecutor(this))
     }
 
+    private fun hasCameraPermission(): Boolean = checkSelfPermission(this, CAMERA) == PERMISSION_GRANTED
+
+    private fun requestCameraPermission() = requestPermission.launch(CAMERA)
+    //endregion
+
     override fun onStart() {
         super.onStart()
         if (!hasCameraPermission()) requestCameraPermission()
     }
 
-    private fun hasCameraPermission(): Boolean = checkSelfPermission(this, CAMERA) == PERMISSION_GRANTED
+    private fun MenuItem.check(checked: Boolean = true, block: () -> Unit = {}) = setChecked(checked).also { block() }.let { true }
 
-    private fun requestCameraPermission() = requestPermission.launch(CAMERA)
-
-    private fun applySettingsState(popup: PopupMenu) {
-        popup.menu.apply {
-            findItem(R.id.menu_item_scanner_mlkit).isEnabled = Decoder.MLKit.isAvailable
-            when (viewModel.decoder.get()) {
-                Decoder.MLKit -> findItem(R.id.menu_item_scanner_mlkit).isChecked = true
-                Decoder.ZXing -> findItem(R.id.menu_item_scanner_zxing).isChecked = true
-            }
-            when (viewModel.mode.get()) {
-                AUTO -> findItem(R.id.menu_item_mode_auto).isChecked = true
-                MANUAL -> findItem(R.id.menu_item_mode_manual).isChecked = true
-            }
-            when (customTheme) {
-                SYSTEM -> findItem(R.id.menu_item_theme_system).isChecked = true
-                DARK -> findItem(R.id.menu_item_theme_dark).isChecked = true
-                LIGHT -> findItem(R.id.menu_item_theme_light).isChecked = true
-            }
-        }
+    override fun onMenuItemClick(item: MenuItem?): Boolean = when (item?.itemId) {
+        R.id.menu_item_scanner_mlkit -> item.check { viewModel.decoder(MLKit) }
+        R.id.menu_item_scanner_zxing -> item.check { viewModel.decoder(ZXing) }
+        R.id.menu_item_mode_auto -> item.check { viewModel.mode(AUTO) }
+        R.id.menu_item_mode_manual -> item.check { viewModel.mode(MANUAL) }
+        R.id.menu_item_theme_system -> item.check { viewModel.theme(SYSTEM) }
+        R.id.menu_item_theme_dark -> item.check { viewModel.theme(DARK) }
+        R.id.menu_item_theme_light -> item.check { viewModel.theme(LIGHT) }
+        R.id.menu_item_generator -> CUSTOM_TABS_INTENT.launchUrl(this, getString(R.string.webapp).toUri()).let { true }
+        else -> false
     }
 
-    override fun onMenuItemClick(item: MenuItem?): Boolean =
-        when (item?.itemId) {
-            R.id.menu_item_scanner_mlkit -> viewModel.decoder.set(Decoder.MLKit)
-            R.id.menu_item_scanner_zxing -> viewModel.decoder.set(Decoder.ZXing)
-            R.id.menu_item_mode_auto -> viewModel.mode.set(AUTO).also { viewModel.reset() }
-            R.id.menu_item_mode_manual -> viewModel.mode.set(MANUAL).also { viewModel.reset() }
-            R.id.menu_item_theme_system -> updateTheme(SYSTEM)
-            R.id.menu_item_theme_dark -> updateTheme(DARK)
-            R.id.menu_item_theme_light -> updateTheme(LIGHT)
-            R.id.menu_item_generator -> CUSTOM_TABS_INTENT.launchUrl(this, getString(R.string.webapp).toUri()).let { true }
-            else -> true
-        }.also { applySettingsState(more) }
-
-    private fun updateTheme(theme: Theme) = lifecycleScope.launch {
-        if (customTheme == theme) return@launch
-        ThemeSetting.set(this@MultiDecoderActivity, theme)
-        recreate()
-    }.let { customTheme != theme }
-
     override fun onBackPressed() {
-        if (viewModel.reset()) return
-        super.onBackPressed()
+        viewModel.onBackPressed()
     }
 
     override fun onDestroy() {
