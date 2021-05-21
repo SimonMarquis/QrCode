@@ -39,6 +39,11 @@ android {
     lint {
         disable("UnsafeExperimentalUsageWarning")
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -48,21 +53,15 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 dependencies {
-    implementation(Kotlin.stdlib.jdk7)
-
-    /* Kotlin Coroutines */
-    implementation(KotlinX.coroutines.core)
-    implementation(KotlinX.coroutines.android)
-    implementation(KotlinX.coroutines.playServices)
 
     implementation(AndroidX.activity)
     implementation(AndroidX.appCompat)
     implementation(AndroidX.browser)
-    implementation(AndroidX.camera.core)
     implementation(AndroidX.camera.camera2)
+    implementation(AndroidX.camera.core)
+    implementation(AndroidX.camera.extensions)
     implementation(AndroidX.camera.lifecycle)
     implementation(AndroidX.camera.view)
-    implementation(AndroidX.camera.extensions)
     implementation(AndroidX.constraintLayout)
     implementation(AndroidX.core.ktx)
     implementation(AndroidX.dataStore.preferences)
@@ -74,19 +73,37 @@ dependencies {
     implementation(AndroidX.preferenceKtx)
     implementation(AndroidX.transition)
 
-    implementation(Google.Dagger.Hilt.android)
-    kapt(Google.dagger.hilt.compiler)
-
     implementation(Google.Android.material)
     implementation(Google.Android.playServices.mlKit.vision.barcodeScanning)
+    implementation(Google.Dagger.Hilt.android)
+
+    implementation(Kotlin.stdlib.jdk7)
+    implementation(KotlinX.coroutines.android)
+    implementation(KotlinX.coroutines.core)
+    implementation(KotlinX.coroutines.playServices)
 
     implementation("com.google.zxing:core:3.4.1")
+
+    testImplementation(AndroidX.archCore.testing)
+    testImplementation(AndroidX.test.core)
+    testImplementation(AndroidX.test.coreKtx)
+    testImplementation(AndroidX.test.ext.junit)
+    testImplementation(AndroidX.test.runner)
+
+    testImplementation(Kotlin.test.common)
+    testImplementation(KotlinX.coroutines.test)
+
+    testImplementation(Testing.junit4)
+    testImplementation(Testing.mockK)
+    testImplementation(Testing.robolectric)
+
+    testImplementation(kotlin("reflect"))
+    testImplementation(kotlin("test"))
 
     androidTestImplementation(AndroidX.test.ext.junitKtx)
     androidTestImplementation(AndroidX.test.runner)
 
-    /* JUnit */
-    testImplementation(Testing.junit4)
+    kapt(Google.dagger.hilt.compiler)
 }
 
 kapt {
