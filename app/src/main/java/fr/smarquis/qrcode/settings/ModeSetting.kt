@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.datastore.preferences.core.stringPreferencesKey
 import fr.smarquis.qrcode.model.Mode
 import fr.smarquis.qrcode.model.Mode.AUTO
+import fr.smarquis.qrcode.model.Mode.MANUAL
 import fr.smarquis.qrcode.utils.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -19,14 +20,12 @@ object ModeSetting : Settings<String, Mode>(stringPreferencesKey("mode")) {
             Build.PRODUCT == "m300" || Build.MODEL == "M300" || Build.DEVICE == "vm300" -> true
             else -> false
         }
-        val extracted = kotlin.runCatching {
-            Mode.valueOf(it.orEmpty())
-        }.getOrNull()
-        when {
-            extracted != null -> extracted
-            forceAuto -> AUTO
-            hasTouchScreen -> Mode.MANUAL
-            else -> AUTO
+        kotlin.runCatching { Mode.valueOf(requireNotNull(it)) }.getOrElse {
+            when {
+                forceAuto -> AUTO
+                hasTouchScreen -> MANUAL
+                else -> AUTO
+            }
         }
     }
 
