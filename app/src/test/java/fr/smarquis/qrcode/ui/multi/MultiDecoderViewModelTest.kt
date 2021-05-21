@@ -138,7 +138,7 @@ class MultiDecoderViewModelTest {
         /* Given */
         val viewModel = viewModel(settings = settings(decoder = MLKit))
         /* When */
-        val decoder = viewModel.decoder(Decoder.ZXing)
+        viewModel.decoder(Decoder.ZXing)
         /* Then */
         assertEquals(Empty, viewModel.results.getOrAwaitValue())
     }

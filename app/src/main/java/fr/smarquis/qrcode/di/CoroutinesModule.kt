@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package fr.smarquis.qrcode.di
 
 import dagger.Module

@@ -3,7 +3,7 @@
 
     <!-- App -->
 
-    <style name="Base.V27.Theme.App" parent="Base.V21.Theme.App">
+    <style name="Base.V27.Theme.App" parent="Base.V0.Theme.App">
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
@@ -11,7 +11,7 @@
 
     <!-- Translucent -->
 
-    <style name="Base.V27.Theme.Translucent" parent="Base.V21.Theme.Translucent">
+    <style name="Base.V27.Theme.Translucent" parent="Base.V0.Theme.Translucent">
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 

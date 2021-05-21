@@ -1,7 +1,6 @@
 package fr.smarquis.qrcode.settings
 
 import android.content.Context
-import androidx.datastore.preferences.core.Preferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import fr.smarquis.qrcode.model.Decoder
 import fr.smarquis.qrcode.model.Mode
