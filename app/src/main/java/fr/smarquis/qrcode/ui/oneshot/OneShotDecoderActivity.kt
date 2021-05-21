@@ -5,12 +5,12 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import fr.smarquis.qrcode.R
-import fr.smarquis.qrcode.ui.DecoderActivity
 import fr.smarquis.qrcode.databinding.ActivitySingleDecoderBinding
-import fr.smarquis.qrcode.model.Barcode
 import fr.smarquis.qrcode.model.Mode.AUTO
 import fr.smarquis.qrcode.model.Mode.MANUAL
-import fr.smarquis.qrcode.settings.ModeHolder
+import fr.smarquis.qrcode.ui.DecoderActivity
+import fr.smarquis.qrcode.ui.oneshot.OneShotResult.Found
+import fr.smarquis.qrcode.ui.oneshot.OneShotResult.NotFound
 import fr.smarquis.qrcode.utils.copyToClipboard
 import fr.smarquis.qrcode.utils.safeStartIntent
 import javax.inject.Inject
@@ -20,11 +20,12 @@ class OneShotDecoderActivity : DecoderActivity() {
 
     private lateinit var binding: ActivitySingleDecoderBinding
 
-    @Inject lateinit var mode: ModeHolder
+    @Inject
+    lateinit var factory: OneShotDecoderViewModel.Factory
 
-    @Inject lateinit var factory: OneShotDecoderViewModel.Factory
-
-    private val viewModel: OneShotDecoderViewModel by viewModels { OneShotDecoderViewModel.provideFactory(factory, intent) }
+    private val viewModel: OneShotDecoderViewModel by viewModels {
+        OneShotDecoderViewModel.provideFactory(factory, intent)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,25 +36,31 @@ class OneShotDecoderActivity : DecoderActivity() {
             open = { safeStartIntent(this, it.intent) },
             copy = { copyToClipboard(this, it.value) }
         )
-        viewModel.barcode.observe(this, ::onBarcode)
+        viewModel.result.observe(this, ::onOneShotResult)
     }
 
-    private fun onBarcode(it: Barcode?) {
-        binding.barcodeView.barcode = it
-        if (it == null) {
-            Toast.makeText(this, R.string.toast_decoder_did_not_find_anything, Toast.LENGTH_LONG).show()
-            finish()
-            return
-        }
-        when (mode.get()) {
+    private fun onOneShotResult(result: OneShotResult) = when (result) {
+        is Found -> onOneShotResultFound(result)
+        NotFound -> onOneShotResultNotFound()
+    }
+
+    private fun onOneShotResultFound(found: Found) {
+        val (barcode, mode) = found
+        binding.barcodeView.barcode = barcode
+        when (mode) {
             AUTO -> {
-                if (!safeStartIntent(this, it.intent)) {
-                    copyToClipboard(this, it.value)
+                if (!safeStartIntent(this, barcode.intent)) {
+                    copyToClipboard(this, barcode.value)
                 }
                 finish()
             }
             MANUAL -> Unit
         }
+    }
+
+    private fun onOneShotResultNotFound() {
+        Toast.makeText(this, R.string.toast_decoder_did_not_find_anything, Toast.LENGTH_LONG).show()
+        finish()
     }
 
 }
