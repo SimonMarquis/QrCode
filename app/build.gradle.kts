@@ -37,7 +37,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     lint {
-        disable("UnsafeExperimentalUsageWarning", "GradleDependency")
+        disable("GradleDependency")
     }
     testOptions {
         unitTests {

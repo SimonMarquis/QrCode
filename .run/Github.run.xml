@@ -11,7 +11,9 @@
       <option name="taskNames">
         <list>
           <option value="clean" />
-          <option value="check" />
+          <option value="assembleDebug" />
+          <option value="test" />
+          <option value="lint" />
           <option value="app:assembleDebug" />
         </list>
       </option>
