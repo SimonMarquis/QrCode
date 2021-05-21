@@ -2,6 +2,7 @@ package fr.smarquis.qrcode.utils
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.camera.core.ImageProxy
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -39,7 +40,7 @@ class DecoderDispatcher @Inject constructor(
                 }
             }
         }.onFailure {
-            it.printStackTrace()
+            Log.e("Decoder", "Failed to decode $any", it)
         }.recoverCatching {
             if (it is UnsupportedOperationException) throw it
             when (this) {
