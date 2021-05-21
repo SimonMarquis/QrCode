@@ -1,7 +1,6 @@
 package fr.smarquis.qrcode.ui.multi
 
 import android.Manifest.permission.CAMERA
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Color.BLACK
@@ -13,10 +12,9 @@ import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
 import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
-import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.browser.customtabs.CustomTabColorSchemeParams
@@ -26,7 +24,6 @@ import androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
 import androidx.camera.core.CameraSelector.DEFAULT_FRONT_CAMERA
 import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat.*
 import androidx.core.net.toUri
 import androidx.core.view.GestureDetectorCompat
@@ -68,18 +65,13 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
 
     private val viewModel by viewModels<MultiDecoderViewModel>()
 
-    private val openAppDetailsSettings: ActivityResultLauncher<Void?> = registerForActivityResult(object : ActivityResultContract<Void?, Boolean>() {
-        override fun createIntent(context: Context, input: Void?): Intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null))
-        override fun parseResult(resultCode: Int, intent: Intent?): Boolean = hasCameraPermission()
-    }) { hasCameraPermission ->
-        if (!hasCameraPermission) requestCameraPermission()
-    }
-
     private val requestPermission: ActivityResultLauncher<String> = registerForActivityResult(RequestPermission()) { isGranted: Boolean ->
         when {
             isGranted -> viewModel.reset()
-            shouldShowRequestPermissionRationale(this, CAMERA) -> requestCameraPermission()
-            else -> openAppDetailsSettings.launch()
+            else -> {
+                Toast.makeText(this, R.string.toast_camera_permission_required, LENGTH_LONG).show()
+                startActivity(Intent(ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null)))
+            }
         }
     }
 
@@ -202,7 +194,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
             }.onSuccess {
                 camera = it
             }.onFailure {
-                Toast.makeText(this, it.message, Toast.LENGTH_LONG).apply { setGravity(Gravity.CENTER, 0, 0) }.show()
+                Toast.makeText(this, it.message, LENGTH_LONG).apply { setGravity(Gravity.CENTER, 0, 0) }.show()
                 finish()
             }
         }
