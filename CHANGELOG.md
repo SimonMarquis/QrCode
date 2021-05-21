@@ -4,6 +4,7 @@
 
 <!-- MarkdownTOC autolink="true" -->
 
+- [1.6.0](#160)
 - [1.5.2](#152)
 - [1.5.1](#151)
 - [1.5.0](#150)
@@ -17,16 +18,22 @@
 <!-- /MarkdownTOC -->
 </details>
 
+## 1.6.0
+> 2021.05.22
+
+- 🌑 Dark mode
+- 📦 Hilt and DataStore migrations
+
 ## 1.5.2
 > 2021.05.09
 
 - 📷 Migrate to CameraX
-- 🔄 Fix default rotation for ZXing 
+- 🔄 Fix default rotation for ZXing
 
 ## 1.5.1
 > 2021.05.08
 
-- 🖼️ Support "Open with" 
+- 🖼️ Support "Open with"
 
 ## 1.5.0
 > 2020.10.25
