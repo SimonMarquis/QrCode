@@ -44,6 +44,8 @@ import fr.smarquis.qrcode.model.Theme.LIGHT
 import fr.smarquis.qrcode.model.Theme.SYSTEM
 import fr.smarquis.qrcode.ui.DecoderActivity
 import fr.smarquis.qrcode.ui.multi.Event.*
+import fr.smarquis.qrcode.ui.multi.MultiResult.Empty
+import fr.smarquis.qrcode.ui.multi.MultiResult.Found
 import fr.smarquis.qrcode.utils.TAG
 import fr.smarquis.qrcode.utils.copyToClipboard
 import fr.smarquis.qrcode.utils.safeStartIntent
@@ -106,25 +108,25 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
 
     //region Results
     private fun onResults(result: MultiResult) = when (result) {
-        is MultiResult.Found -> onMultiResultFound(result)
-        MultiResult.Empty -> onMultiResultNotFound()
+        is Found -> onFound(result)
+        Empty -> onEmpty()
     }
 
-    private fun onMultiResultFound(result: MultiResult.Found) {
-        val (barcode, mode) = result
+    private fun onFound(result: Found) {
+        val (barcode, mode, handled) = result.also { it.handled = true }
         Log.d(TAG, "onBarcode($barcode)")
-        binding.coordinatorLayout.playSoundEffect(SoundEffectConstants.CLICK)
+        if (!handled) binding.coordinatorLayout.playSoundEffect(SoundEffectConstants.CLICK)
         when (mode) {
             MANUAL -> binding.barcodeView.barcode = barcode
             AUTO -> {
-                if (lifecycle.currentState.isAtLeast(RESUMED) && !safeStartIntent(this, barcode.intent)) {
+                if (!handled && lifecycle.currentState.isAtLeast(RESUMED) && !safeStartIntent(this, barcode.intent)) {
                     toast = copyToClipboard(this, barcode.value, toast)
                 }
             }
         }
     }
 
-    private fun onMultiResultNotFound() {
+    private fun onEmpty() {
         binding.barcodeView.barcode = null
     }
     //endregion
