@@ -104,9 +104,9 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
         Empty -> onEmpty()
     }
 
-    private fun onFound(result: Found) {
-        val (barcode, mode, handled) = result.also { it.handled = true }
-        Log.d(TAG, "onBarcode($barcode)")
+    private fun onFound(found: Found) {
+        Log.d(TAG, "onFound($found:)")
+        val (barcode, mode, handled) = found
         if (!handled) binding.root.playSoundEffect(SoundEffectConstants.CLICK)
         when (mode) {
             MANUAL -> binding.barcodeView.barcode = barcode
@@ -116,6 +116,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
                 }
             }
         }
+        found.handled = true
     }
 
     private fun onEmpty() {
