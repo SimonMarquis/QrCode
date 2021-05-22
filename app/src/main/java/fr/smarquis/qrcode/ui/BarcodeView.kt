@@ -1,5 +1,6 @@
 package fr.smarquis.qrcode.ui
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -8,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.transition.TransitionManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
@@ -34,7 +34,6 @@ class BarcodeView @JvmOverloads constructor(
     var barcode: Barcode? = null
         set(value) {
             field = value.also { if (it == field) return }
-            TransitionManager.beginDelayedTransition(this@BarcodeView)
             if (value != null) render(value) else clear()
         }
 
@@ -61,6 +60,12 @@ class BarcodeView @JvmOverloads constructor(
                     STATE_COLLAPSED -> STATE_EXPANDED
                     STATE_EXPANDED -> STATE_COLLAPSED
                     else -> return@setOnClickListener
+                }
+            }
+            listOf(header, body).forEach {
+                it.layoutTransition = LayoutTransition().apply {
+                    setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+                    setAnimateParentHierarchy(false) // Required by BottomSheetBehavior
                 }
             }
         }
