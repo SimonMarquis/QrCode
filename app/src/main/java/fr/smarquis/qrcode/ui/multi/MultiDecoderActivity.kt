@@ -89,7 +89,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
             onCollapsed = viewModel::reset,
             open = { safeStartIntent(this, it.intent) },
             copy = { toast = copyToClipboard(this, it.value, toast) },
-            more = viewModel::requestShowMore,
+            showMore = viewModel::requestShowMore,
         )
     }
 
@@ -107,7 +107,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
     private fun onFound(result: Found) {
         val (barcode, mode, handled) = result.also { it.handled = true }
         Log.d(TAG, "onBarcode($barcode)")
-        if (!handled) binding.coordinatorLayout.playSoundEffect(SoundEffectConstants.CLICK)
+        if (!handled) binding.root.playSoundEffect(SoundEffectConstants.CLICK)
         when (mode) {
             MANUAL -> binding.barcodeView.barcode = barcode
             AUTO -> {

@@ -5,7 +5,7 @@
     tools:parentTag="android.widget.LinearLayout">
 
     <LinearLayout
-        android:id="@+id/headerLinearLayout"
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_sheet_peek_height"
         android:clickable="false"
@@ -18,13 +18,13 @@
         android:showDividers="middle">
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progress"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:padding="@dimen/material_unit_0_5" />
 
         <ImageView
-            android:id="@+id/iconImageView"
+            android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:contentDescription="@string/content_description_icon"
@@ -35,7 +35,7 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/titleTextView"
+            android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
@@ -48,43 +48,43 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <ImageView
-            android:id="@+id/copyImageView"
+            android:id="@+id/copy"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/content_description_copy"
             android:padding="@dimen/material_unit_1"
             android:src="@drawable/ic_content_copy_black_24dp"
-            app:tint="?colorAccent"
             android:visibility="gone"
+            app:tint="?colorAccent"
             tools:visibility="visible" />
 
         <ImageView
-            android:id="@+id/openImageView"
+            android:id="@+id/open"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/content_description_open"
             android:padding="@dimen/material_unit_1"
             android:src="@drawable/ic_open_in_new_black_24dp"
-            app:tint="?colorAccent"
             android:visibility="gone"
+            app:tint="?colorAccent"
             tools:visibility="visible" />
 
         <ImageView
-            android:id="@+id/moreImageView"
+            android:id="@+id/more"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/content_description_more"
-            app:tint="?colorAccent"
             android:padding="@dimen/material_unit_1"
-            android:src="@drawable/ic_more_vert_black_24dp" />
+            android:src="@drawable/ic_more_vert_black_24dp"
+            app:tint="?colorAccent" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/descriptionLinearLayout"
+        android:id="@+id/body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@drawable/material_divider_1"
@@ -94,13 +94,13 @@
         android:showDividers="beginning|middle|end">
 
         <TextView
-            android:id="@+id/rawTextView"
+            android:id="@+id/raw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/detailsTextView"
+            android:id="@+id/details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone" />

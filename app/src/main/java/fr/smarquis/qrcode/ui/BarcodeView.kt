@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.transition.TransitionManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
@@ -27,7 +29,7 @@ class BarcodeView @JvmOverloads constructor(
     private lateinit var onCollapsed: () -> Unit
     private lateinit var open: (Barcode) -> Unit
     private lateinit var copy: (Barcode) -> Unit
-    private var more: (() -> Unit)? = null
+    private var showMore: (() -> Unit)? = null
 
     var barcode: Barcode? = null
         set(value) {
@@ -50,10 +52,10 @@ class BarcodeView @JvmOverloads constructor(
         clipChildren = false
         orientation = VERTICAL
         with(binding) {
-            moreImageView.setOnClickListener { more?.invoke() }
-            openImageView.setOnClickListener { barcode?.let { open(it) } }
-            copyImageView.setOnClickListener { barcode?.let { copy(it) } }
-            headerLinearLayout.setOnClickListener {
+            more.setOnClickListener { showMore?.invoke() }
+            open.setOnClickListener { barcode?.let { open(it) } }
+            copy.setOnClickListener { barcode?.let { copy(it) } }
+            header.setOnClickListener {
                 barcode ?: return@setOnClickListener
                 bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
                     STATE_COLLAPSED -> STATE_EXPANDED
@@ -64,7 +66,7 @@ class BarcodeView @JvmOverloads constructor(
         }
     }
 
-    fun anchor(): ImageView = binding.moreImageView
+    fun anchor(): ImageView = binding.more
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -76,10 +78,10 @@ class BarcodeView @JvmOverloads constructor(
         bottomSheetBehavior.removeBottomSheetCallback(callback)
     }
 
-    fun configure(onCollapsed: () -> Unit, more: (() -> Unit)? = null, open: (Barcode) -> Unit, copy: (Barcode) -> Unit) {
+    fun configure(onCollapsed: () -> Unit, showMore: (() -> Unit)? = null, open: (Barcode) -> Unit, copy: (Barcode) -> Unit) {
         this.onCollapsed = onCollapsed
-        this.more = more.also {
-            binding.moreImageView.visibility = if (it == null) View.GONE else View.VISIBLE
+        this.showMore = showMore.also {
+            binding.more.isVisible = it != null
         }
         this.open = open
         this.copy = copy
@@ -87,30 +89,30 @@ class BarcodeView @JvmOverloads constructor(
 
     private fun clear() = with(binding) {
         bottomSheetBehavior.state = STATE_COLLAPSED
-        progressBar.visibility = View.VISIBLE
-        iconImageView.visibility = View.GONE
-        iconImageView.setImageResource(0)
-        titleTextView.setText(R.string.status_scanning)
-        openImageView.visibility = View.GONE
-        copyImageView.visibility = View.GONE
-        detailsTextView.visibility = View.GONE
-        rawTextView.visibility = View.GONE
+        progress.isVisible = true
+        icon.isGone = true
+        icon.setImageResource(0)
+        title.setText(R.string.status_scanning)
+        open.isGone = true
+        copy.isGone = true
+        details.isGone = true
+        raw.isGone = true
     }
 
     private fun render(barcode: Barcode) = with(binding) {
-        progressBar.visibility = View.GONE
-        iconImageView.setImageResource(barcode.icon)
-        iconImageView.visibility = View.VISIBLE
-        titleTextView.text = barcode.title
-        openImageView.visibility = if (barcode.intent != null) View.VISIBLE else View.GONE
-        copyImageView.visibility = View.VISIBLE
+        progress.isGone = true
+        icon.setImageResource(barcode.icon)
+        icon.isVisible = true
+        title.text = barcode.title
+        open.isVisible = barcode.intent != null
+        copy.isVisible = true
         barcode.details.let {
-            detailsTextView.visibility = if (it.isNullOrBlank()) View.GONE else View.VISIBLE
-            detailsTextView.text = it
+            details.isGone = it.isNullOrBlank()
+            details.text = it
         }
         barcode.value.let {
-            rawTextView.visibility = if (it.isBlank()) View.GONE else View.VISIBLE
-            rawTextView.text = it
+            raw.isGone = it.isBlank()
+            raw.text = it
         }
         bottomSheetBehavior.state = STATE_EXPANDED
     }
