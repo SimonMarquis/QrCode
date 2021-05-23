@@ -45,6 +45,7 @@ import fr.smarquis.qrcode.ui.multi.MultiResult.Empty
 import fr.smarquis.qrcode.ui.multi.MultiResult.Found
 import fr.smarquis.qrcode.utils.TAG
 import fr.smarquis.qrcode.utils.copyToClipboard
+import fr.smarquis.qrcode.utils.emojify
 import fr.smarquis.qrcode.utils.safeStartIntent
 import java.util.concurrent.Executors
 
@@ -150,7 +151,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
                 LIGHT -> R.id.menu_item_theme_light
             }.let(::findItem).check()
         }
-    }.show()
+    }.emojify().show()
     //endregion
 
     private fun initTouchGestures() {

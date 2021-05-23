@@ -65,6 +65,7 @@ dependencies {
     implementation(AndroidX.constraintLayout)
     implementation(AndroidX.core.ktx)
     implementation(AndroidX.dataStore.preferences)
+    implementation(AndroidX.emoji)
     implementation(AndroidX.fragmentKtx)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.runtimeKtx)

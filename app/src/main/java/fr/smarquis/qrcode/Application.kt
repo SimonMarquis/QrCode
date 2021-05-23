@@ -3,6 +3,7 @@ package fr.smarquis.qrcode
 import dagger.hilt.android.HiltAndroidApp
 import fr.smarquis.qrcode.model.Decoder.MLKit
 import fr.smarquis.qrcode.utils.checkGooglePlayServices
+import fr.smarquis.qrcode.utils.initEmojiCompat
 import fr.smarquis.qrcode.utils.isGooglePlayServicesAvailable
 
 
@@ -13,6 +14,7 @@ class Application : android.app.Application() {
         super.onCreate()
         checkGooglePlayServices(this)
         MLKit.isAvailable = isGooglePlayServicesAvailable(this)
+        initEmojiCompat()
     }
 
 }
