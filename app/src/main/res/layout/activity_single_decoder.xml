@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.oneshot.OneShotDecoderActivity">
 
-    <View
-        android:id="@+id/background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#00000000" />
-
     <fr.smarquis.qrcode.ui.BarcodeView
         android:id="@+id/barcodeView"
         android:layout_width="@dimen/bottom_sheet_width"

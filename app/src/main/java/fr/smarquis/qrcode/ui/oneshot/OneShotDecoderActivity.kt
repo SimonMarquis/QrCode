@@ -30,7 +30,7 @@ class OneShotDecoderActivity : DecoderActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ActivitySingleDecoderBinding.inflate(layoutInflater).also { binding = it }.root)
-        binding.background.setOnClickListener { finish() }
+        binding.root.setOnClickListener { finish() }
         binding.barcodeView.configure(
             onCollapsed = { finish() },
             open = { safeStartIntent(this, it.intent) },
