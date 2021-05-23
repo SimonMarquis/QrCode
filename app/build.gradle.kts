@@ -84,6 +84,7 @@ dependencies {
     implementation(KotlinX.coroutines.playServices)
 
     implementation("com.google.zxing:core:_")
+    implementation("dev.chrisbanes.insetter:insetter:_")
 
     testImplementation(AndroidX.archCore.testing)
     testImplementation(AndroidX.test.core)

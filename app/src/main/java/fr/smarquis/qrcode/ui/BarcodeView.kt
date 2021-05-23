@@ -7,11 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.view.WindowInsetsCompat.Type.navigationBars
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import dev.chrisbanes.insetter.Insetter
 import fr.smarquis.qrcode.R
 import fr.smarquis.qrcode.databinding.ViewBarcodeBinding
 import fr.smarquis.qrcode.model.Barcode
@@ -69,6 +72,12 @@ class BarcodeView @JvmOverloads constructor(
                 }
             }
         }
+        Insetter.builder().setOnApplyInsetsListener { _, insets, _ ->
+            insets.getInsets(navigationBars()).let { navigationBars ->
+                updatePadding(bottom = navigationBars.bottom)
+                bottomSheetBehavior.peekHeight = resources.getDimensionPixelSize(R.dimen.bottom_sheet_peek_height) + navigationBars.bottom
+            }
+        }.applyToView(this)
     }
 
     fun anchor(): ImageView = binding.more

@@ -5,6 +5,7 @@
 
     <style name="Base.V27.Theme.App" parent="Base.V0.Theme.App">
         <item name="android:navigationBarColor">?android:colorBackground</item>
+        <item name="android:windowTranslucentNavigation">@bool/windowTranslucentNavigation</item>
         <item name="android:windowLightNavigationBar">?isLightTheme</item>
     </style>
 
@@ -14,6 +15,7 @@
 
     <style name="Base.V27.Theme.Translucent" parent="Base.V0.Theme.Translucent">
         <item name="android:navigationBarColor">?android:colorBackground</item>
+        <item name="android:windowTranslucentNavigation">@bool/windowTranslucentNavigation</item>
         <item name="android:windowLightNavigationBar">?isLightTheme</item>
     </style>
 

@@ -27,6 +27,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat.*
 import androidx.core.net.toUri
 import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.WindowCompat.setDecorFitsSystemWindows
 import androidx.lifecycle.Lifecycle.State.CREATED
 import androidx.lifecycle.Lifecycle.State.RESUMED
 import dagger.hilt.android.AndroidEntryPoint
@@ -85,6 +86,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
     }
 
     private fun initUi() {
+        setDecorFitsSystemWindows(window, false)
         setContentView(ActivityMultiDecoderBinding.inflate(layoutInflater).also { binding = it }.root)
         binding.barcodeView.configure(
             onCollapsed = viewModel::reset,
