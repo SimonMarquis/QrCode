@@ -14,7 +14,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:_")
         classpath("com.android.tools.build:gradle:_")
         classpath(Google.playServicesGradlePlugin)
-        classpath("com.google.dagger:hilt-android-gradle-plugin:HEAD-SNAPSHOT")
+        classpath(Google.Dagger.hilt.android.gradlePlugin)
     }
 }
 
