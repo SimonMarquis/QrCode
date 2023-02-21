@@ -19,6 +19,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
+          distribution: 'temurin'
       - name: Fix gradlew permission
         run: chmod +x gradlew
       - name: Decode google-services.json
