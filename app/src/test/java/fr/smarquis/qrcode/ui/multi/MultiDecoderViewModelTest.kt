@@ -67,7 +67,7 @@ class MultiDecoderViewModelTest {
         /* Then */
         assertEquals(
             expected = Found(barcode, mode),
-            actual = viewModel.results.getOrAwaitValue()
+            actual = viewModel.results.getOrAwaitValue(),
         )
     }
 

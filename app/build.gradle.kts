@@ -1,9 +1,11 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
-    id("dagger.hilt.android.plugin")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.kotlin)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.google.hilt)
+    alias(libs.plugins.google.playServices)
 }
 
 val versionMajor = 1
@@ -12,11 +14,11 @@ val versionPatch = 0
 val versionBuild = 0
 
 android {
-    compileSdk = 30
+    compileSdk = 33
     defaultConfig {
         applicationId = "fr.smarquis.qrcode"
         minSdk = 21
-        targetSdk = 30
+        targetSdk = 33
         versionCode = versionMajor * 1000000 + versionMinor * 10000 + versionPatch * 100 + versionBuild
         versionName = "$versionMajor.$versionMinor.$versionPatch"
         multiDexEnabled = true
@@ -33,11 +35,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    lint {
-        disable("GradleDependency")
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     testOptions {
         unitTests {
@@ -46,66 +45,57 @@ android {
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
 dependencies {
+    kapt(libs.hilt.compiler)
 
-    implementation(AndroidX.activity)
-    implementation(AndroidX.appCompat)
-    implementation(AndroidX.browser)
-    implementation(AndroidX.camera.camera2)
-    implementation(AndroidX.camera.core)
-    implementation(AndroidX.camera.extensions)
-    implementation(AndroidX.camera.lifecycle)
-    implementation(AndroidX.camera.view)
-    implementation(AndroidX.constraintLayout)
-    implementation(AndroidX.core.ktx)
-    implementation(AndroidX.dataStore.preferences)
-    implementation(AndroidX.emoji)
-    implementation(AndroidX.fragmentKtx)
-    implementation(AndroidX.lifecycle.liveDataKtx)
-    implementation(AndroidX.lifecycle.runtimeKtx)
-    implementation(AndroidX.lifecycle.viewModelKtx)
-    implementation(AndroidX.multidex)
-    implementation(AndroidX.preferenceKtx)
-    implementation(AndroidX.transition)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.extensions)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.emoji)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.multidex)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.transition)
+    implementation(libs.google.android.material)
+    implementation(libs.google.mlkit.barcode)
+    implementation(libs.hilt)
+    implementation(libs.insetter)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.playServices)
+    implementation(libs.zxing)
 
-    implementation(Google.Android.material)
-    implementation(Google.Android.playServices.mlKit.vision.barcodeScanning)
-    implementation(Google.Dagger.Hilt.android)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.test.core.ktx)
+    testImplementation(libs.androidx.test.ext.junit)
+    testImplementation(libs.androidx.test.runner)
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.reflect)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.robolectric)
 
-    implementation(Kotlin.stdlib.jdk7)
-    implementation(KotlinX.coroutines.android)
-    implementation(KotlinX.coroutines.core)
-    implementation(KotlinX.coroutines.playServices)
-
-    implementation("com.google.zxing:core:_")
-    implementation("dev.chrisbanes.insetter:insetter:_")
-
-    testImplementation(AndroidX.archCore.testing)
-    testImplementation(AndroidX.test.core)
-    testImplementation(AndroidX.test.coreKtx)
-    testImplementation(AndroidX.test.ext.junit)
-    testImplementation(AndroidX.test.runner)
-
-    testImplementation(Kotlin.test.common)
-    testImplementation(KotlinX.coroutines.test)
-
-    testImplementation(Testing.junit4)
-    testImplementation(Testing.mockK)
-    testImplementation(Testing.robolectric)
-
-    testImplementation(kotlin("reflect"))
-    testImplementation(kotlin("test"))
-
-    androidTestImplementation(AndroidX.test.ext.junitKtx)
-    androidTestImplementation(AndroidX.test.runner)
-
-    kapt(Google.dagger.hilt.compiler)
+    androidTestImplementation(libs.androidx.test.ext.junit.ktx)
+    androidTestImplementation(libs.androidx.test.runner)
 }
 
 kapt {

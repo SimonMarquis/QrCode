@@ -15,7 +15,7 @@ object CoreModule {
 
     @Provides
     fun provideDefaultSharedPreferences(
-        @ApplicationContext appContext: Context
+        @ApplicationContext appContext: Context,
     ): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
 
 }

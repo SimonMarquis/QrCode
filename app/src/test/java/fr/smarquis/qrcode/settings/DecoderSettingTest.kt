@@ -28,7 +28,7 @@ class DecoderSettingTest {
         MLKit.isAvailable = isMlKitEnabled
         assertEquals(
             expected = expected,
-            actual = flowOf(value).mapOut(context).single()
+            actual = flowOf(value).mapOut(context).single(),
         )
     }
 

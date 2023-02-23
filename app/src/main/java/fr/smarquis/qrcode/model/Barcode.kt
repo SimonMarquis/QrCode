@@ -11,14 +11,14 @@ import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.color
 import androidx.core.text.scale
-import com.google.mlkit.vision.barcode.Barcode as VisionBarcode
-import com.google.mlkit.vision.barcode.Barcode.*
+import com.google.mlkit.vision.barcode.common.Barcode.*
 import com.google.zxing.Result
 import fr.smarquis.qrcode.R
 import fr.smarquis.qrcode.utils.appendKeyValue
 import fr.smarquis.qrcode.utils.isSafeIntent
 import java.lang.Double.parseDouble
 import java.util.regex.Pattern
+import com.google.mlkit.vision.barcode.common.Barcode as VisionBarcode
 
 sealed class Barcode(open val format: Format, open val value: String) {
 
@@ -92,7 +92,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
 
     data class Text(
         override val value: String,
-        override val format: Format
+        override val format: Format,
     ) : Barcode(format, value) {
         override val icon = R.drawable.ic_subject_black_24dp
         override val key: String = "Text"
@@ -105,7 +105,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
         override val format: Format,
         val ssid: String?,
         val password: String?,
-        val encryption: Int
+        val encryption: Int,
     ) :
         Barcode(format, value) {
         override val icon = R.drawable.ic_network_wifi_black_24dp
@@ -131,7 +131,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
 
     data class Url(
         override val value: String,
-        override val format: Format
+        override val format: Format,
     ) : Barcode(format, value) {
         override val icon = R.drawable.ic_link_black_24dp
         override val key: String = "Url"
@@ -145,7 +145,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
         override val value: String,
         override val format: Format,
         val phoneNumber: String?,
-        val message: String?
+        val message: String?,
     ) :
         Barcode(format, value) {
         override val icon = R.drawable.ic_sms_black_24dp
@@ -181,7 +181,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
         val lat: Double?,
         val lng: Double?,
         val altitude: Double? = null,
-        val query: String? = parse(value, format)?.query
+        val query: String? = parse(value, format)?.query,
     ) : Barcode(format, value) {
         override val icon = R.drawable.ic_location_on_black_24dp
         override val key: String = "Geo"
@@ -241,7 +241,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
     data class ContactInfo(
         override val value: String,
         override val format: Format,
-        val contactInfo: VisionBarcode.ContactInfo
+        val contactInfo: VisionBarcode.ContactInfo,
     ) : Barcode(format, value) {
         override val icon = R.drawable.ic_account_circle_black_24dp
         override val key: String = "Contact"
@@ -254,7 +254,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
         override val format: Format,
         val address: String?,
         val subject: String?,
-        val body: String?
+        val body: String?,
     ) :
         Barcode(format, value) {
         override val icon = R.drawable.ic_email_black_24dp
@@ -272,7 +272,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
     data class Phone(
         override val value: String,
         override val format: Format,
-        val number: String?
+        val number: String?,
     ) :
         Barcode(format, value) {
         override val icon = R.drawable.ic_phone_black_24dp
@@ -288,7 +288,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
     data class CalendarEvent(
         override val value: String,
         override val format: Format,
-        val event: VisionBarcode.CalendarEvent
+        val event: VisionBarcode.CalendarEvent,
     ) : Barcode(format, value) {
         override val icon = R.drawable.ic_event_available_black_24dp
         override val key: String = "Event"

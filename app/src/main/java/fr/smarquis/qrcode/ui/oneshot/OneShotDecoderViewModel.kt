@@ -50,7 +50,7 @@ class OneShotDecoderViewModel @AssistedInject constructor(
             intent: Intent,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T = assistedFactory.create(intent) as T
+            override fun <T : ViewModel> create(modelClass: Class<T>): T = assistedFactory.create(intent) as T
         }
     }
 

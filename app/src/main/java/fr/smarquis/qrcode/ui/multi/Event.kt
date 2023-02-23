@@ -7,7 +7,7 @@ import fr.smarquis.qrcode.model.Theme
 sealed class Event {
 
     data class ShowMore(val decoder: Decoder, val mode: Mode, val theme: Theme) : Event()
-    object Recreate: Event()
-    object Finish: Event()
+    object Recreate : Event()
+    object Finish : Event()
 
 }

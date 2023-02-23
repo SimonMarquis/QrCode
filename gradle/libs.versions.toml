@@ -1,0 +1,83 @@
+[versions]
+android-gradlePlugin = "7.4.1"
+androidx-activity = "1.6.1"
+androidx-appcompat = "1.6.1"
+androidx-arch-core = "2.2.0"
+androidx-browser = "1.5.0"
+androidx-camera = "1.2.1"
+androidx-constraintlayout = "2.2.0-alpha07"
+androidx-core = "1.9.0"
+androidx-databinding = "7.4.1"
+androidx-datastore = "1.1.0-alpha01"
+androidx-emoji = "1.1.0"
+androidx-fragment = "1.5.5"
+androidx-lifecycle = "2.5.1"
+androidx-multidex = "2.0.1"
+androidx-preference = "1.2.0"
+androidx-test-core = "1.5.0"
+androidx-test-ext-junit = "1.1.5"
+androidx-test-runner = "1.5.2"
+androidx-transition = "1.4.1"
+google-android-material = "1.8.0"
+google-mlkit-barcode = "18.1.0"
+hilt = "2.45"
+junit = "4.13.2"
+kotlin = "1.8.10"
+kotlinx-coroutines = "1.6.4"
+mockk = "1.13.4"
+robolectric = "4.9.2"
+
+[libraries]
+androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "androidx-browser" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "androidx-camera" }
+androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "androidx-camera" }
+androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "androidx-camera" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "androidx-camera" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "androidx-camera" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch-core" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
+androidx-emoji = { module = "androidx.emoji:emoji", version.ref = "androidx-emoji" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
+androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidx-multidex" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "androidx-preference" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test-core" }
+androidx-test-core-ktx = { module = "androidx.test:core-ktx", version.ref = "androidx-test-core" }
+androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
+androidx-test-ext-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidx-test-ext-junit" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
+androidx-transition = { module = "androidx.transition:transition", version.ref = "androidx-transition" }
+zxing = "com.google.zxing:core:3.4.1"
+google-services = "com.google.gms:google-services:4.3.15"
+hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+hilt-gradleplugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
+insetter = "dev.chrisbanes.insetter:insetter:0.6.0"
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-playServices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+google-android-material = { module = "com.google.android.material:material", version.ref = "google-android-material" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+google-mlkit-barcode = { module = "com.google.android.gms:play-services-mlkit-barcode-scanning", version.ref = "google-mlkit-barcode" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "android-gradlePlugin" }
+android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "android-gradlePlugin" }
+android-lint = { id = "com.android.lint", version.ref = "android-gradlePlugin" }
+android-test = { id = "com.android.test", version.ref = "android-gradlePlugin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+google-playServices = { id = "com.google.gms.google-services", version = "4.3.15" }
