@@ -58,7 +58,7 @@ google-services = "com.google.gms:google-services:4.3.15"
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-gradleplugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
-insetter = "dev.chrisbanes.insetter:insetter:0.6.0"
+insetter = "dev.chrisbanes.insetter:insetter:0.6.1"
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
