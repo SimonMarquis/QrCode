@@ -89,6 +89,7 @@ class MultiDecoderViewModel @Inject constructor(
                 is Barcode -> reset()
                 null -> _events.value = Finish
             }
+
             AUTO -> _events.value = Finish
         }
     }

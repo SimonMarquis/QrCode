@@ -60,7 +60,7 @@ class DecoderDispatcherTest {
         val dispatcher = newDecoderDispatcher(newSettings(newDecoder<Decoder>(barcode)))
         assertEquals(
             expected = barcode,
-            actual = dispatcher.decodeInternal(mockk<Uri>()).getOrThrow()
+            actual = dispatcher.decodeInternal(mockk<Uri>()).getOrThrow(),
         )
     }
 
@@ -71,7 +71,7 @@ class DecoderDispatcherTest {
         val dispatcher = newDecoderDispatcher(newSettings(newDecoder<ZXing>(CustomException)))
         assertEquals(
             expected = CustomException,
-            actual = dispatcher.decodeInternal(mockk<Uri>()).exceptionOrNull()
+            actual = dispatcher.decodeInternal(mockk<Uri>()).exceptionOrNull(),
         )
     }
 
@@ -85,7 +85,7 @@ class DecoderDispatcherTest {
         val dispatcher = newDecoderDispatcher(newSettings { decoders.removeFirst() })
         assertEquals(
             expected = barcode,
-            actual = dispatcher.decodeInternal(mockk<Uri>()).getOrThrow()
+            actual = dispatcher.decodeInternal(mockk<Uri>()).getOrThrow(),
         )
     }
 

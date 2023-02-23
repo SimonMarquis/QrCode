@@ -8,9 +8,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
-import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.Gravity
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
+import android.view.SoundEffectConstants
+import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.activity.result.ActivityResultLauncher
@@ -19,12 +24,17 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.camera.core.*
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
 import androidx.camera.core.CameraSelector.DEFAULT_FRONT_CAMERA
+import androidx.camera.core.FocusMeteringAction
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.content.ContextCompat.*
+import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.content.ContextCompat.getMainExecutor
 import androidx.core.net.toUri
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.WindowCompat.setDecorFitsSystemWindows
@@ -41,7 +51,9 @@ import fr.smarquis.qrcode.model.Theme.DARK
 import fr.smarquis.qrcode.model.Theme.LIGHT
 import fr.smarquis.qrcode.model.Theme.SYSTEM
 import fr.smarquis.qrcode.ui.DecoderActivity
-import fr.smarquis.qrcode.ui.multi.Event.*
+import fr.smarquis.qrcode.ui.multi.Event.Finish
+import fr.smarquis.qrcode.ui.multi.Event.Recreate
+import fr.smarquis.qrcode.ui.multi.Event.ShowMore
 import fr.smarquis.qrcode.ui.multi.MultiResult.Empty
 import fr.smarquis.qrcode.ui.multi.MultiResult.Found
 import fr.smarquis.qrcode.utils.TAG
@@ -157,17 +169,23 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
     //endregion
 
     private fun initTouchGestures() {
-        val scaleDetector = ScaleGestureDetector(this, object : SimpleOnScaleGestureListener() {
-            override fun onScale(detector: ScaleGestureDetector): Boolean = camera?.apply {
-                cameraControl.setZoomRatio((cameraInfo.zoomState.value?.zoomRatio ?: 0F) * detector.scaleFactor)
-            }.let { true }
-        })
+        val scaleDetector = ScaleGestureDetector(
+            this,
+            object : SimpleOnScaleGestureListener() {
+                override fun onScale(detector: ScaleGestureDetector): Boolean = camera?.apply {
+                    cameraControl.setZoomRatio((cameraInfo.zoomState.value?.zoomRatio ?: 0F) * detector.scaleFactor)
+                }.let { true }
+            },
+        )
         val meteringPointFactory = binding.preview.meteringPointFactory
-        val gestureDetector = GestureDetectorCompat(this, object : SimpleOnGestureListener() {
-            override fun onDown(e: MotionEvent): Boolean = camera?.cameraControl?.startFocusAndMetering(
-                FocusMeteringAction.Builder(meteringPointFactory.createPoint(e.x, e.y)).build()
-            ).let { super.onDown(e) }
-        })
+        val gestureDetector = GestureDetectorCompat(
+            this,
+            object : SimpleOnGestureListener() {
+                override fun onDown(e: MotionEvent): Boolean = camera?.cameraControl?.startFocusAndMetering(
+                    FocusMeteringAction.Builder(meteringPointFactory.createPoint(e.x, e.y)).build(),
+                ).let { super.onDown(e) }
+            },
+        )
         binding.preview.setOnTouchListener { view: View, motionEvent: MotionEvent ->
             scaleDetector.onTouchEvent(motionEvent)
             gestureDetector.onTouchEvent(motionEvent)

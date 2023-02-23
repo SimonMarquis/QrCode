@@ -14,7 +14,7 @@ import java.io.IOException
 
 val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "settings",
-    produceMigrations = { listOf(SharedPreferencesMigration(context = it, it.packageName + "_preferences")) }
+    produceMigrations = { listOf(SharedPreferencesMigration(context = it, it.packageName + "_preferences")) },
 )
 
 sealed class Settings<In, Out>(

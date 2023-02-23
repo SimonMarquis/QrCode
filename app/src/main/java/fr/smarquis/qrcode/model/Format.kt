@@ -1,6 +1,6 @@
 package fr.smarquis.qrcode.model
 
-import com.google.mlkit.vision.barcode.Barcode
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
 

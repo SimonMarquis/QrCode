@@ -26,7 +26,7 @@ class ThemeSettingTest {
     private fun test(expected: Theme, value: String?) = coroutineDispatcher.runBlockingTest {
         assertEquals(
             expected = expected,
-            actual = flowOf(value).mapOut(context).single()
+            actual = flowOf(value).mapOut(context).single(),
         )
     }
 

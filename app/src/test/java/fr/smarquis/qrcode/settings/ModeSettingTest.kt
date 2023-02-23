@@ -26,7 +26,7 @@ class ModeSettingTest {
     private fun test(expected: Mode, value: String?) = coroutineDispatcher.runBlockingTest {
         assertEquals(
             expected = expected,
-            actual = flowOf(value).mapOut(context).single()
+            actual = flowOf(value).mapOut(context).single(),
         )
     }
 

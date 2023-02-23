@@ -48,6 +48,7 @@ class DecoderDispatcher @Inject constructor(
                     settings.decoder(ZXing)
                     return decodeInternal(any)
                 }
+
                 is ZXing -> throw it
             }
         }

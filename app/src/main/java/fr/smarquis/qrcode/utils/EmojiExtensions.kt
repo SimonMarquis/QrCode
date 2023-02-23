@@ -16,7 +16,7 @@ fun Application.initEmojiCompat(): EmojiCompat =
         "com.google.android.gms.fonts",
         "com.google.android.gms",
         "Noto Color Emoji Compat",
-        R.array.com_google_android_gms_fonts_certs
+        R.array.com_google_android_gms_fonts_certs,
     ).let {
         FontRequestEmojiCompatConfig(this, it).setReplaceAll(true)
     }.let(EmojiCompat::init)
@@ -26,7 +26,7 @@ fun PopupMenu.emojify() = apply {
 }
 
 fun Menu.process(): Unit = iterator().forEach { item ->
-    item.title = get().process(item.title)
+    item.title = get().process(item.title ?: "")
     item.subMenu?.process()
 }
 

@@ -51,7 +51,7 @@ class OneShotDecoderViewModelTest {
     private fun intent(
         action: String = Intent.ACTION_VIEW,
         data: Uri? = mockk(),
-        type: String? = "image/*"
+        type: String? = "image/*",
     ): Intent = mockk {
         every { this@mockk.action } returns action
         every { this@mockk.data } returns data
@@ -77,7 +77,7 @@ class OneShotDecoderViewModelTest {
         /* Then */
         assertEquals(
             expected = OneShotResult.Found(barcode, mode),
-            actual = viewModel.result.getOrAwaitValue()
+            actual = viewModel.result.getOrAwaitValue(),
         )
     }
 

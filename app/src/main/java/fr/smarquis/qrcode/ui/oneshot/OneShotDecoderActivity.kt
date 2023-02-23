@@ -34,7 +34,7 @@ class OneShotDecoderActivity : DecoderActivity() {
         binding.barcodeView.configure(
             onCollapsed = { finish() },
             open = { safeStartIntent(this, it.intent) },
-            copy = { copyToClipboard(this, it.value) }
+            copy = { copyToClipboard(this, it.value) },
         )
         viewModel.result.observe(this, ::onOneShotResult)
     }
@@ -54,6 +54,7 @@ class OneShotDecoderActivity : DecoderActivity() {
                 }
                 finish()
             }
+
             MANUAL -> Unit
         }
     }

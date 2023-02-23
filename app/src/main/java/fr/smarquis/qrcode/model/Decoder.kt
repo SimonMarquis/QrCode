@@ -16,10 +16,10 @@ import androidx.camera.core.ImageProxy
 import androidx.exifinterface.media.ExifInterface
 import androidx.exifinterface.media.ExifInterface.*
 import com.google.android.gms.tasks.Tasks
-import com.google.mlkit.vision.barcode.Barcode.FORMAT_ALL_FORMATS
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode.FORMAT_ALL_FORMATS
 import com.google.mlkit.vision.common.InputImage
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
@@ -27,8 +27,8 @@ import com.google.zxing.multi.GenericMultipleBarcodeReader
 import fr.smarquis.qrcode.utils.TAG
 import fr.smarquis.qrcode.utils.rotate
 import fr.smarquis.qrcode.utils.toLuminance
-import java.util.concurrent.TimeUnit.MILLISECONDS
 import kotlin.math.pow
+import kotlin.time.DurationUnit.MILLISECONDS
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimedValue
 import kotlin.time.measureTimedValue
