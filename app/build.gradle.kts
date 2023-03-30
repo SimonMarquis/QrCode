@@ -14,6 +14,7 @@ val versionPatch = 0
 val versionBuild = 0
 
 android {
+    namespace = "fr.smarquis.qrcode"
     compileSdk = 33
     defaultConfig {
         applicationId = "fr.smarquis.qrcode"
