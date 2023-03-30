@@ -13,8 +13,9 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.test.assertEquals
@@ -24,11 +25,9 @@ import kotlin.test.assertIs
 @RunWith(AndroidJUnit4::class)
 class DecoderDispatcherTest {
 
-    private val coroutineDispatcher = TestCoroutineDispatcher()
-
     private val context = ApplicationProvider.getApplicationContext<Context>()
 
-    private fun newDecoderDispatcher(settings: SettingsRepository = newSettings()) = DecoderDispatcher(context, coroutineDispatcher, settings)
+    private fun TestScope.newDecoderDispatcher(settings: SettingsRepository = newSettings()) = DecoderDispatcher(context, UnconfinedTestDispatcher(this.testScheduler), settings)
 
     private fun newSettings(decoder: Decoder = newDecoder()) = mockk<SettingsRepository>(relaxed = true) {
         every { this@mockk.decoder } returns flowOf(decoder)
@@ -49,13 +48,13 @@ class DecoderDispatcherTest {
     }
 
     @Test
-    fun decodeUnsupportedType() = coroutineDispatcher.runBlockingTest {
+    fun decodeUnsupportedType() = runTest {
         val dispatcher = newDecoderDispatcher()
         assertIs<UnsupportedOperationException>(dispatcher.decodeInternal(Unit).exceptionOrNull())
     }
 
     @Test
-    fun decodeSuccess() = coroutineDispatcher.runBlockingTest {
+    fun decodeSuccess() = runTest {
         val barcode = mockk<Barcode>()
         val dispatcher = newDecoderDispatcher(newSettings(newDecoder<Decoder>(barcode)))
         assertEquals(
@@ -67,7 +66,7 @@ class DecoderDispatcherTest {
     private object CustomException : Exception()
 
     @Test
-    fun decodeFailureZXing() = coroutineDispatcher.runBlockingTest {
+    fun decodeFailureZXing() = runTest {
         val dispatcher = newDecoderDispatcher(newSettings(newDecoder<ZXing>(CustomException)))
         assertEquals(
             expected = CustomException,
@@ -76,7 +75,7 @@ class DecoderDispatcherTest {
     }
 
     @Test
-    fun decodeFailureMLKitFallbackWithZXing() = coroutineDispatcher.runBlockingTest {
+    fun decodeFailureMLKitFallbackWithZXing() = runTest {
         val barcode = mockk<Barcode>()
         val decoders = mutableListOf(
             newDecoder<MLKit>(CustomException),

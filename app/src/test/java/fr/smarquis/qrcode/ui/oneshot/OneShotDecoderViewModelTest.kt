@@ -15,7 +15,8 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -28,7 +29,7 @@ class OneShotDecoderViewModelTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
+    var mainCoroutineRule = MainCoroutineRule(UnconfinedTestDispatcher())
 
     private fun viewModel(
         decoder: DecoderDispatcher = decoder(),
@@ -59,7 +60,7 @@ class OneShotDecoderViewModelTest {
     }
 
     @Test
-    fun `do not attempt to decode invalid inputs`() = mainCoroutineRule.runBlockingTest {
+    fun `do not attempt to decode invalid inputs`() = runTest {
         val decoder = mockk<DecoderDispatcher> {
             coEvery { decode(any()) } coAnswers { fail() }
         }
@@ -69,7 +70,7 @@ class OneShotDecoderViewModelTest {
     }
 
     @Test
-    fun `result Found`() = mainCoroutineRule.runBlockingTest {
+    fun `result Found`() = runTest {
         /* Given */
         val barcode = mockk<Barcode>()
         val mode = Mode.values().random()
@@ -82,7 +83,7 @@ class OneShotDecoderViewModelTest {
     }
 
     @Test
-    fun `result NotFound`() = mainCoroutineRule.runBlockingTest {
+    fun `result NotFound`() = runTest {
         assertEquals(NotFound, viewModel(decoder = decoder(null)).result.getOrAwaitValue())
     }
 

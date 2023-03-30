@@ -23,7 +23,8 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -36,7 +37,7 @@ class MultiDecoderViewModelTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
+    var mainCoroutineRule = MainCoroutineRule(UnconfinedTestDispatcher())
 
     private fun viewModel(
         decoder: DecoderDispatcher = decoder(),
@@ -57,7 +58,7 @@ class MultiDecoderViewModelTest {
     }
 
     @Test
-    fun `MultiResult Found`() = mainCoroutineRule.runBlockingTest {
+    fun `MultiResult Found`() = runTest {
         /* Given */
         val barcode = mockk<Barcode>()
         val mode = Mode.values().random()
@@ -72,7 +73,7 @@ class MultiDecoderViewModelTest {
     }
 
     @Test
-    fun `MultiResult Empty after reset`() = mainCoroutineRule.runBlockingTest {
+    fun `MultiResult Empty after reset`() = runTest {
         /* Given */
         val viewModel = viewModel()
         /* When */
@@ -82,7 +83,7 @@ class MultiDecoderViewModelTest {
     }
 
     @Test
-    fun `no MultiResult when no barcode`() = mainCoroutineRule.runBlockingTest {
+    fun `no MultiResult when no barcode`() = runTest {
         /* Given */
         val viewModel = viewModel(decoder = decoder(null))
         /* When */
@@ -92,7 +93,7 @@ class MultiDecoderViewModelTest {
     }
 
     @Test
-    fun `onBackPressed trigger Finish in Mode AUTO`() = mainCoroutineRule.runBlockingTest {
+    fun `onBackPressed trigger Finish in Mode AUTO`() = runTest {
         /* Given */
         val viewModel = viewModel(settings = settings(AUTO))
         /* When */
@@ -102,7 +103,7 @@ class MultiDecoderViewModelTest {
     }
 
     @Test
-    fun `onBackPressed trigger Empty in Mode MANUAL with no result`() = mainCoroutineRule.runBlockingTest {
+    fun `onBackPressed trigger Empty in Mode MANUAL with no result`() = runTest {
         /* Given */
         val viewModel = viewModel(settings = settings(MANUAL))
         /* When */
@@ -113,7 +114,7 @@ class MultiDecoderViewModelTest {
     }
 
     @Test
-    fun `onBackPressed trigger Finish in Mode MANUAL when no result`() = mainCoroutineRule.runBlockingTest {
+    fun `onBackPressed trigger Finish in Mode MANUAL when no result`() = runTest {
         /* Given */
         val viewModel = viewModel(settings = settings(MANUAL))
         /* When */
@@ -124,7 +125,7 @@ class MultiDecoderViewModelTest {
 
     //region Settings
     @Test
-    fun `Updating Mode trigger Reset`() = mainCoroutineRule.runBlockingTest {
+    fun `Updating Mode trigger Reset`() = runTest {
         /* Given */
         val viewModel = viewModel(settings = settings(mode = AUTO))
         /* When */
@@ -134,7 +135,7 @@ class MultiDecoderViewModelTest {
     }
 
     @Test
-    fun `Updating Decoder trigger Reset`() = mainCoroutineRule.runBlockingTest {
+    fun `Updating Decoder trigger Reset`() = runTest {
         /* Given */
         val viewModel = viewModel(settings = settings(decoder = MLKit))
         /* When */
@@ -144,7 +145,7 @@ class MultiDecoderViewModelTest {
     }
 
     @Test
-    fun `Updating Theme trigger Recreate`() = mainCoroutineRule.runBlockingTest {
+    fun `Updating Theme trigger Recreate`() = runTest {
         /* Given */
         val viewModel = viewModel(settings = settings(theme = SYSTEM))
         /* When */

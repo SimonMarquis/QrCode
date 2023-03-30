@@ -10,8 +10,7 @@ import fr.smarquis.qrcode.settings.DecoderSetting.mapOut
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.test.assertEquals
@@ -20,11 +19,9 @@ import kotlin.test.assertEquals
 @RunWith(AndroidJUnit4::class)
 class DecoderSettingTest {
 
-    private val coroutineDispatcher = TestCoroutineDispatcher()
-
     private val context = ApplicationProvider.getApplicationContext<Context>()
 
-    private fun test(expected: Decoder, value: String?, isMlKitEnabled: Boolean = true) = coroutineDispatcher.runBlockingTest {
+    private fun test(expected: Decoder, value: String?, isMlKitEnabled: Boolean = true) = runTest {
         MLKit.isAvailable = isMlKitEnabled
         assertEquals(
             expected = expected,
