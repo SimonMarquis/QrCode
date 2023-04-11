@@ -24,7 +24,7 @@ hilt = "2.45"
 junit = "4.13.2"
 kotlin = "1.8.20"
 kotlinx-coroutines = "1.6.4"
-mockk = "1.13.4"
+mockk = "1.13.5"
 robolectric = "4.10"
 
 [libraries]
