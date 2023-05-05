@@ -23,7 +23,7 @@ google-mlkit-barcode = "18.2.0"
 hilt = "2.46"
 junit = "4.13.2"
 kotlin = "1.8.21"
-kotlinx-coroutines = "1.6.4"
+kotlinx-coroutines = "1.7.0"
 mockk = "1.13.5"
 robolectric = "4.10.2"
 
