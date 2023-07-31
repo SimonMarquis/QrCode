@@ -72,18 +72,13 @@ fun SpannableStringBuilder.appendKeyValue(key: String, value: String?) {
 }
 
 fun isSafeIntent(context: Context, intent: Intent?): Boolean {
-    return intent?.let {
-        it.resolveActivity(context.packageManager) != null
-    } ?: false
+    intent ?: return false
+    return intent.resolveActivity(context.packageManager) != null || context.packageManager.queryIntentActivities(intent, 0).isNotEmpty()
 }
 
-fun safeStartIntent(context: Context, intent: Intent?): Boolean {
-    intent ?: return false
-    intent.resolveActivity(context.packageManager) ?: return false
-    return runCatching {
-        context.startActivity(intent)
-    }.isSuccess
-}
+fun safeStartIntent(context: Context, intent: Intent?): Boolean = runCatching {
+    context.startActivity(intent)
+}.isSuccess
 
 fun copyToClipboard(context: Context, string: String?, toast: Toast? = null): Toast? {
     val data = newPlainText(context.packageName, string ?: return null)
