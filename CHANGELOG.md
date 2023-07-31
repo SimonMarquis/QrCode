@@ -18,6 +18,12 @@
 <!-- /MarkdownTOC -->
 </details>
 
+## 1.7.0
+> 2023.08.01
+
+- 🩹 Fix deeplinks for API levels 30+ (Android 11)
+- ⚙️ Support API level 34 (Android 14)
+
 ## 1.6.0
 > 2021.05.22
 
