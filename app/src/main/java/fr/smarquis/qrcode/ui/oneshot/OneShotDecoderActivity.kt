@@ -33,7 +33,7 @@ class OneShotDecoderActivity : DecoderActivity() {
         binding.root.setOnClickListener { finish() }
         binding.barcodeView.configure(
             onCollapsed = { finish() },
-            open = { safeStartIntent(this, it.intent) },
+            open = { if (!safeStartIntent(this, it.intent)) copyToClipboard(this, it.value) },
             copy = { copyToClipboard(this, it.value) },
         )
         viewModel.result.observe(this, ::onOneShotResult)

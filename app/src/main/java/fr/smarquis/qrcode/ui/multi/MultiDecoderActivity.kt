@@ -102,7 +102,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
         setContentView(ActivityMultiDecoderBinding.inflate(layoutInflater).also { binding = it }.root)
         binding.barcodeView.configure(
             onCollapsed = viewModel::reset,
-            open = { safeStartIntent(this, it.intent) },
+            open = { if (!safeStartIntent(this, it.intent)) toast = copyToClipboard(this, it.value, toast) },
             copy = { toast = copyToClipboard(this, it.value, toast) },
             showMore = viewModel::requestShowMore,
         )
