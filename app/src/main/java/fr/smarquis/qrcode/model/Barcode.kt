@@ -52,8 +52,11 @@ sealed class Barcode(open val format: Format, open val value: String) {
 
         private fun parse(value: String, format: Format): Barcode {
             val scheme = runCatching { value.toUri().scheme }.getOrNull()
-            return if (scheme.isNullOrBlank()) Text(value, format)
-            else Url(value, format)
+            return when {
+                scheme.isNullOrBlank() -> null
+                scheme.any { it.isWhitespace() } -> null
+                else -> Url(value, format)
+            } ?: Text(value, format)
         }
     }
 
