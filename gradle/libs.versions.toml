@@ -24,6 +24,7 @@ hilt = "2.48"
 junit = "4.13.2"
 kotlin = "1.9.10"
 kotlinx-coroutines = "1.7.3"
+ksp = "1.9.10-1.0.13"
 mockk = "1.13.7"
 robolectric = "4.10.3"
 
@@ -78,6 +79,6 @@ android-library = { id = "com.android.library", version.ref = "android-gradlePlu
 android-lint = { id = "com.android.lint", version.ref = "android-gradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "android-gradlePlugin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-playServices = { id = "com.google.gms.google-services", version = "4.3.15" }

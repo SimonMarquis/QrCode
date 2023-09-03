@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.android.kotlin)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.google.ksp)
     alias(libs.plugins.google.hilt)
     alias(libs.plugins.google.playServices)
 }
@@ -53,7 +53,7 @@ tasks.withType<KotlinCompile> {
 }
 
 dependencies {
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
@@ -97,8 +97,4 @@ dependencies {
 
     androidTestImplementation(libs.androidx.test.ext.junit.ktx)
     androidTestImplementation(libs.androidx.test.runner)
-}
-
-kapt {
-    correctErrorTypes = true
 }
