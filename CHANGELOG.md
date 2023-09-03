@@ -18,6 +18,12 @@
 <!-- /MarkdownTOC -->
 </details>
 
+## 1.7.1
+> 2023.09.03
+
+- ⚙️ Replace `QUERY_ALL_PACKAGES` permission with basic URI scheme detection
+- 📋 Avoid duplicated toast on Android 13 when copying to clipboard
+
 ## 1.7.0
 > 2023.08.01
 
