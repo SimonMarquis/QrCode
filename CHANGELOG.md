@@ -4,6 +4,7 @@
 
 <!-- MarkdownTOC autolink="true" -->
 
+- [1.7.2](#172)
 - [1.7.1](#171)
 - [1.7.0](#170)
 - [1.6.0](#160)
@@ -19,6 +20,11 @@
 
 <!-- /MarkdownTOC -->
 </details>
+
+## 1.7.2
+> 2023.09.03
+
+- 🩹 Fix invalid URI scheme detection
 
 ## 1.7.1
 > 2023.09.03
