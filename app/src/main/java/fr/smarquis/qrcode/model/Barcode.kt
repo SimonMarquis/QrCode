@@ -1,6 +1,5 @@
 package fr.smarquis.qrcode.model
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -15,7 +14,6 @@ import com.google.mlkit.vision.barcode.common.Barcode.*
 import com.google.zxing.Result
 import fr.smarquis.qrcode.R
 import fr.smarquis.qrcode.utils.appendKeyValue
-import fr.smarquis.qrcode.utils.isSafeIntent
 import java.lang.Double.parseDouble
 import java.util.regex.Pattern
 import com.google.mlkit.vision.barcode.common.Barcode as VisionBarcode
@@ -24,7 +22,7 @@ sealed class Barcode(open val format: Format, open val value: String) {
 
     companion object {
 
-        fun parse(context: Context, vision: VisionBarcode): Barcode {
+        fun parse(vision: VisionBarcode): Barcode {
             val format = Format.of(vision)
             val value = vision.rawValue.orEmpty()
             return when (vision.valueType) {
@@ -37,10 +35,10 @@ sealed class Barcode(open val format: Format, open val value: String) {
                 TYPE_CALENDAR_EVENT -> vision.calendarEvent?.let { CalendarEvent(value, format, it) }
                 TYPE_CONTACT_INFO -> vision.contactInfo?.let { ContactInfo(value, format, it) }
                 else -> null
-            } ?: fallback(context, value, format)
+            } ?: parse(value, format)
         }
 
-        fun parse(context: Context, result: Result): Barcode {
+        fun parse(result: Result): Barcode {
             val format = Format.of(result)
             val value = result.text
             val uri = value.toUri()
@@ -49,16 +47,13 @@ sealed class Barcode(open val format: Format, open val value: String) {
                 "http", "https" -> Url(value, format)
                 "geo" -> GeoPoint.parse(value, format)
                 else -> null
-            } ?: fallback(context, value, format)
+            } ?: parse(value, format)
         }
 
-        private fun fallback(context: Context, value: String, format: Format): Barcode {
-            val url = Url(value, format)
-            return if (isSafeIntent(context, url.intent)) {
-                url
-            } else {
-                Text(value, format)
-            }
+        private fun parse(value: String, format: Format): Barcode {
+            val scheme = runCatching { value.toUri().scheme }.getOrNull()
+            return if (scheme.isNullOrBlank()) Text(value, format)
+            else Url(value, format)
         }
     }
 

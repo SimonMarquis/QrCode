@@ -105,9 +105,7 @@ sealed class Decoder {
             Tasks.await(detector.process(InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)))
                 .sortedBy {
                     imageProxy.distance(it.boundingBox ?: return@sortedBy Double.MAX_VALUE)
-                }.map {
-                    Barcode.parse(context, it)
-                }
+                }.map(Barcode::parse)
         }.also { it.log() }.value.firstOrNull()
 
         @ExperimentalTime
@@ -115,9 +113,7 @@ sealed class Decoder {
             Tasks.await(detector.process(InputImage.fromFilePath(context, uri)))
                 .sortedByDescending {
                     it.boundingBox?.run { width() * height() } ?: 0
-                }.map {
-                    Barcode.parse(context, it)
-                }
+                }.map(Barcode::parse)
         }.also { it.log() }.value.firstOrNull()
     }
 
@@ -139,7 +135,7 @@ sealed class Decoder {
                     .sortedBy {
                         imageProxy.distance(it.resultPoints ?: return@sortedBy Double.MAX_VALUE)
                     }.map {
-                        Barcode.parse(context, it)
+                        Barcode.parse(it)
                     }
             }.getOrDefault(emptyList())
         }.also { it.log() }.value.firstOrNull()
@@ -168,7 +164,7 @@ sealed class Decoder {
                     .sortedBy {
                         image.distance(it.resultPoints ?: return@sortedBy Double.MAX_VALUE)
                     }.map {
-                        Barcode.parse(context, it)
+                        Barcode.parse(it)
                     }
             }.getOrDefault(emptyList()).also { image.recycle() }
         }.also { it.log() }.value.firstOrNull()

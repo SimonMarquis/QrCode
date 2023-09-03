@@ -71,11 +71,6 @@ fun SpannableStringBuilder.appendKeyValue(key: String, value: String?) {
     append(value)
 }
 
-fun isSafeIntent(context: Context, intent: Intent?): Boolean {
-    intent ?: return false
-    return intent.resolveActivity(context.packageManager) != null || context.packageManager.queryIntentActivities(intent, 0).isNotEmpty()
-}
-
 fun safeStartIntent(context: Context, intent: Intent?): Boolean = runCatching {
     context.startActivity(intent)
 }.isSuccess
