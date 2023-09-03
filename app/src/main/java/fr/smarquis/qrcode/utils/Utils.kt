@@ -4,6 +4,8 @@ import android.content.ClipData.newPlainText
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.TIRAMISU
 import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.Gravity
@@ -84,5 +86,6 @@ fun copyToClipboard(context: Context, string: String?, toast: Toast? = null): To
         append("\n\n")
         bold { append(string) }
     }
+    if (SDK_INT >= TIRAMISU) return null // Starting in Android 13, the system displays a standard visual confirmation when content is added to the clipboard.
     return Toast.makeText(context, text, Toast.LENGTH_LONG).apply { setGravity(Gravity.CENTER, 0, 0) }.also { it.show() }
 }
