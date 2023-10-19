@@ -1,7 +1,6 @@
 package fr.smarquis.qrcode.ui.multi
 
 import android.Manifest.permission.CAMERA
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Color.BLACK
@@ -19,6 +18,7 @@ import android.view.SoundEffectConstants
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.activity.viewModels
@@ -107,6 +107,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
             copy = { toast = copyToClipboard(this, it.value, toast) },
             showMore = viewModel::requestShowMore,
         )
+        onBackPressedDispatcher.addCallback(this) { viewModel.onBackPressed() }
     }
 
     private fun initViewModel() {
@@ -246,12 +247,6 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
         R.id.menu_item_theme_light -> item.check { viewModel.theme(LIGHT) }
         R.id.menu_item_generator -> CUSTOM_TABS_INTENT.launchUrl(this, getString(R.string.webapp).toUri()).let { true }
         else -> false
-    }
-
-    @Deprecated("Deprecated in Java")
-    @SuppressLint("MissingSuperCall")
-    override fun onBackPressed() {
-        viewModel.onBackPressed()
     }
 
     override fun onDestroy() {
