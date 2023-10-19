@@ -1,6 +1,7 @@
 package fr.smarquis.qrcode.ui.multi
 
 import android.Manifest.permission.CAMERA
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Color.BLACK
@@ -247,6 +248,8 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
         else -> false
     }
 
+    @Deprecated("Deprecated in Java")
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         viewModel.onBackPressed()
     }
