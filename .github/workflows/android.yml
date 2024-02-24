@@ -10,8 +10,13 @@ jobs:
 
   build-tests-lint:
 
-    name: Build & Tests & Lint
+    name: Build & Tests & Lint [useKSP2=${{ matrix.useKSP2 }}, useK2Uast=${{ matrix.useK2Uast }}]
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        useKSP2: [true, false]
+        useK2Uast: [true, false]
 
     steps:
       - uses: actions/checkout@v4
@@ -25,23 +30,23 @@ jobs:
         run: echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
       - uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
       - name: Assemble → Test → Lint
-        run: ./gradlew assembleDebug test lint --stacktrace
+        run: ./gradlew assembleDebug test lint -Pksp.useKSP2=${{ matrix.useKSP2 }} -Pandroid.lint.useK2Uast=${{ matrix.useK2Uast }} -Pandroid.experimental.lint.version=8.4.0-alpha11 --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug.apk
+          name: app-debug-${{ matrix.useKSP2 }}-${{ matrix.useK2Uast }}.apk
           path: app/build/outputs/apk/debug/app-debug.apk
       - name: Upload UnitTest reports
         uses: actions/upload-artifact@v4
         with:
-          name: unit-tests-reports
+          name: unit-tests-reports-${{ matrix.useKSP2 }}-${{ matrix.useK2Uast }}
           path: |
             **/reports/tests/test*UnitTest/
             **/build/test-results/Test-*.xml
       - name: Upload Lint reports
         uses: actions/upload-artifact@v4
         with:
-          name: lint-reports
+          name: lint-reports-${{ matrix.useKSP2 }}-${{ matrix.useK2Uast }}
           path: |
             **/reports/lint-results-*.xml
             **/reports/lint-results-*.html
