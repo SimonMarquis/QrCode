@@ -24,7 +24,7 @@ hilt = "2.51"
 junit = "4.13.2"
 kotlin = "1.9.22"
 kotlinx-coroutines = "1.8.0"
-ksp = "1.9.22-1.0.18"
+ksp = "1.9.23-1.0.19"
 mockk = "1.13.10"
 robolectric = "4.11.1"
 
