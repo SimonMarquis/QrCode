@@ -1,5 +1,5 @@
 [versions]
-android-gradlePlugin = "8.3.0"
+android-gradlePlugin = "8.3.1"
 androidx-activity = "1.8.2"
 androidx-appcompat = "1.6.1"
 androidx-arch-core = "2.2.0"
@@ -20,13 +20,13 @@ androidx-test-runner = "1.5.2"
 androidx-transition = "1.4.1"
 google-android-material = "1.11.0"
 google-mlkit-barcode = "18.3.0"
-hilt = "2.51"
+hilt = "2.51.1"
 junit = "4.13.2"
 kotlin = "2.0.0-Beta5"
 kotlinx-coroutines = "1.8.0"
 ksp = "2.0.0-Beta5-1.0.20"
 mockk = "1.13.10"
-robolectric = "4.11.1"
+robolectric = "4.12.1"
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
