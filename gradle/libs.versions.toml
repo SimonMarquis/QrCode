@@ -25,7 +25,7 @@ junit = "4.13.2"
 kotlin = "1.9.23"
 kotlinx-coroutines = "1.8.1"
 ksp = "1.9.23-1.0.20"
-mockk = "1.13.10"
+mockk = "1.13.11"
 robolectric = "4.12.1"
 
 [libraries]
