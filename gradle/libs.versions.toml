@@ -55,7 +55,7 @@ androidx-test-ext-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
 androidx-transition = { module = "androidx.transition:transition", version.ref = "androidx-transition" }
 zxing = "com.google.zxing:core:3.5.3"
-google-services = "com.google.gms:google-services:4.4.1"
+google-services = "com.google.gms:google-services:4.4.2"
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-gradleplugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
@@ -81,4 +81,4 @@ android-test = { id = "com.android.test", version.ref = "android-gradlePlugin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-google-playServices = { id = "com.google.gms.google-services", version = "4.4.1" }
+google-playServices = { id = "com.google.gms.google-services", version = "4.4.2" }
