@@ -26,7 +26,7 @@ kotlin = "2.0.0"
 kotlinx-coroutines = "1.8.1"
 ksp = "2.0.0-1.0.23"
 mockk = "1.13.11"
-robolectric = "4.12.2"
+robolectric = "4.13"
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
