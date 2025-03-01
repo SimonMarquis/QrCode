@@ -20,7 +20,7 @@ android {
     defaultConfig {
         applicationId = "fr.smarquis.qrcode"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = versionMajor * 1000000 + versionMinor * 10000 + versionPatch * 100 + versionBuild
         versionName = "$versionMajor.$versionMinor.$versionPatch"
         multiDexEnabled = true
