@@ -16,7 +16,7 @@ val versionBuild = 0
 
 android {
     namespace = "fr.smarquis.qrcode"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "fr.smarquis.qrcode"
         minSdk = 21
