@@ -56,6 +56,8 @@ kotlin {
 dependencies {
     ksp(libs.hilt.compiler)
 
+    implementation(platform(libs.kotlinx.coroutines.bom))
+
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.browser)
