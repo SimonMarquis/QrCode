@@ -78,7 +78,6 @@ dependencies {
     implementation(libs.google.android.material)
     implementation(libs.google.mlkit.barcode)
     implementation(libs.hilt)
-    implementation(libs.insetter)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.playServices)
