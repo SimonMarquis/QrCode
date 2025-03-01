@@ -81,7 +81,7 @@ class DecoderDispatcherTest {
             newDecoder<MLKit>(CustomException),
             newDecoder<ZXing>(barcode),
         )
-        val dispatcher = newDecoderDispatcher(newSettings { decoders.removeFirst() })
+        val dispatcher = newDecoderDispatcher(newSettings { decoders.removeAt(0) })
         assertEquals(
             expected = barcode,
             actual = dispatcher.decodeInternal(mockk<Uri>()).getOrThrow(),
