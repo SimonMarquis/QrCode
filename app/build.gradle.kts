@@ -87,7 +87,6 @@ dependencies {
 
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.androidx.test.core)
-    testImplementation(libs.androidx.test.core.ktx)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.androidx.test.runner)
     testImplementation(libs.junit)
@@ -97,6 +96,6 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.robolectric)
 
-    androidTestImplementation(libs.androidx.test.ext.junit.ktx)
+    androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
 }
