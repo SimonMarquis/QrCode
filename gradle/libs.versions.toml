@@ -36,7 +36,7 @@ junit = "junit:junit:4.13.2"
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android" }
-kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version= "1.10.1" }
+kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version= "1.10.2" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core" }
 kotlinx-coroutines-playServices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
