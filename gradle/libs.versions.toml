@@ -15,7 +15,7 @@ androidx-camera-extensions = { module = "androidx.camera:camera-extensions", ver
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "androidx-camera" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "androidx-camera" }
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.2.1"
-androidx-core-ktx = "androidx.core:core-ktx:1.15.0"
+androidx-core-ktx = "androidx.core:core-ktx:1.16.0"
 androidx-datastore-preferences = "androidx.datastore:datastore-preferences:1.1.4"
 androidx-emoji = "androidx.emoji:emoji:1.1.0"
 androidx-fragment-ktx = "androidx.fragment:fragment-ktx:1.8.6"
