@@ -41,7 +41,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-playServices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 mockk = "io.mockk:mockk:1.14.4"
-robolectric = "org.robolectric:robolectric:4.15"
+robolectric = "org.robolectric:robolectric:4.15.1"
 zxing = "com.google.zxing:core:3.5.3"
 
 [plugins]
