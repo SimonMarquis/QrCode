@@ -24,7 +24,7 @@ androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtim
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-multidex = "androidx.multidex:multidex:2.0.1"
 androidx-preference-ktx = "androidx.preference:preference-ktx:1.2.1"
-androidx-test-core = "androidx.test:core-ktx:1.6.1"
+androidx-test-core = "androidx.test:core-ktx:1.7.0"
 androidx-test-ext-junit = "androidx.test.ext:junit-ktx:1.2.1"
 androidx-test-runner = "androidx.test:runner:1.6.2"
 androidx-transition = "androidx.transition:transition:1.6.0"
