@@ -16,11 +16,11 @@ val versionBuild = 0
 
 android {
     namespace = "fr.smarquis.qrcode"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "fr.smarquis.qrcode"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = versionMajor * 1000000 + versionMinor * 10000 + versionPatch * 100 + versionBuild
         versionName = "$versionMajor.$versionMinor.$versionPatch"
         multiDexEnabled = true
