@@ -2,7 +2,7 @@
 agp = "8.12.1"
 androidx-camera = "1.4.2"
 androidx-lifecycle = "2.9.2"
-hilt = "2.57"
+hilt = "2.57.1"
 
 [libraries]
 androidx-activity = "androidx.activity:activity:1.10.1"
