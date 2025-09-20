@@ -19,7 +19,7 @@ android {
     compileSdk = 36
     defaultConfig {
         applicationId = "fr.smarquis.qrcode"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 36
         versionCode = versionMajor * 1000000 + versionMinor * 10000 + versionPatch * 100 + versionBuild
         versionName = "$versionMajor.$versionMinor.$versionPatch"
