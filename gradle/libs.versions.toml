@@ -40,7 +40,7 @@ kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bo
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core" }
 kotlinx-coroutines-playServices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
-mockk = "io.mockk:mockk:1.14.5"
+mockk = "io.mockk:mockk:1.14.6"
 robolectric = "org.robolectric:robolectric:4.16"
 zxing = "com.google.zxing:core:3.5.3"
 
