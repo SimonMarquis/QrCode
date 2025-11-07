@@ -48,6 +48,6 @@ zxing = "com.google.zxing:core:3.5.3"
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-kotlin = { id = "org.jetbrains.kotlin.android", version = "2.2.21" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-google-ksp = { id = "com.google.devtools.ksp", version = "2.3.1" }
+google-ksp = { id = "com.google.devtools.ksp", version = "2.3.2" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-playServices = { id = "com.google.gms.google-services", version = "4.4.4" }
