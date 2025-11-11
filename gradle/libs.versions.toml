@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.0"
+agp = "8.13.1"
 androidx-camera = "1.5.1"
 androidx-lifecycle = "2.9.4"
 hilt = "2.57.2"
