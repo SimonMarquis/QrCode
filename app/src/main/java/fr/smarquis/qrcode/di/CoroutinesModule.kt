@@ -12,22 +12,23 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Dispatchers.Unconfined
 import javax.inject.Qualifier
-import kotlin.annotation.AnnotationRetention.BINARY
+import kotlin.annotation.AnnotationTarget.FUNCTION
+import kotlin.annotation.AnnotationTarget.VALUE_PARAMETER
 
 @Qualifier
-@Retention(BINARY)
+@Target(FUNCTION, VALUE_PARAMETER)
 annotation class MainDispatcher
 
 @Qualifier
-@Retention(BINARY)
+@Target(FUNCTION, VALUE_PARAMETER)
 annotation class DefaultDispatcher
 
 @Qualifier
-@Retention(BINARY)
+@Target(FUNCTION, VALUE_PARAMETER)
 annotation class IoDispatcher
 
 @Qualifier
-@Retention(BINARY)
+@Target(FUNCTION, VALUE_PARAMETER)
 annotation class UnconfinedDispatcher
 
 
