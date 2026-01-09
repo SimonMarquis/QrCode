@@ -3,6 +3,7 @@ agp = "8.13.2"
 androidx-camera = "1.5.2"
 androidx-lifecycle = "2.10.0"
 hilt = "2.57.2"
+kotlin = "2.2.21"
 
 [libraries]
 androidx-activity = "androidx.activity:activity:1.12.2"
@@ -33,6 +34,7 @@ google-mlkit-barcode = "com.google.android.gms:play-services-mlkit-barcode-scann
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 junit = "junit:junit:4.13.2"
+kotlin-metadata = { module = "org.jetbrains.kotlin:kotlin-metadata-jvm", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android" }
@@ -46,7 +48,7 @@ zxing = "com.google.zxing:core:3.5.4"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-android-kotlin = { id = "org.jetbrains.kotlin.android", version = "2.2.21" }
+android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 google-ksp = { id = "com.google.devtools.ksp", version = "2.3.4" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

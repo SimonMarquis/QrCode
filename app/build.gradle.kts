@@ -55,6 +55,7 @@ kotlin {
 
 dependencies {
     ksp(libs.hilt.compiler)
+    ksp(libs.kotlin.metadata)
 
     implementation(platform(libs.kotlinx.coroutines.bom))
 
