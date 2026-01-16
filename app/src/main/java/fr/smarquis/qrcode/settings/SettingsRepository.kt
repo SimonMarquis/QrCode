@@ -10,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SettingsRepository @Inject constructor(@ApplicationContext val appContext: Context) {
+class SettingsRepository @Inject constructor(@param:ApplicationContext val appContext: Context) {
 
     val mode: Flow<Mode> = ModeSetting.get(appContext)
     suspend fun mode(mode: Mode) = ModeSetting.set(appContext, mode)

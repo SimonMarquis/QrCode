@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
+import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.Gravity
 import android.view.MenuItem
@@ -37,7 +38,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.content.ContextCompat.getMainExecutor
 import androidx.core.net.toUri
-import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.WindowCompat.setDecorFitsSystemWindows
 import androidx.lifecycle.Lifecycle.State.CREATED
 import androidx.lifecycle.Lifecycle.State.RESUMED
@@ -180,7 +180,7 @@ class MultiDecoderActivity : DecoderActivity(), PopupMenu.OnMenuItemClickListene
             },
         )
         val meteringPointFactory = binding.preview.meteringPointFactory
-        val gestureDetector = GestureDetectorCompat(
+        val gestureDetector = GestureDetector(
             this,
             object : SimpleOnGestureListener() {
                 override fun onDown(e: MotionEvent): Boolean = camera?.cameraControl?.startFocusAndMetering(

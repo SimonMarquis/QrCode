@@ -1,6 +1,8 @@
 package fr.smarquis.qrcode.ui.oneshot
 
 import android.content.Intent
+import android.net.Uri
+import androidx.core.content.IntentCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -25,7 +27,7 @@ class OneShotDecoderViewModel @AssistedInject constructor(
     val result: LiveData<OneShotResult> = liveData {
         when (intent.action) {
             Intent.ACTION_VIEW -> intent.data
-            Intent.ACTION_SEND -> intent.getParcelableExtra(Intent.EXTRA_STREAM)
+            Intent.ACTION_SEND -> IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java)
             else -> null
         }.takeIf {
             intent.type?.startsWith("image/") == true

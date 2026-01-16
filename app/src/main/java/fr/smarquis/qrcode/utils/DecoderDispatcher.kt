@@ -19,7 +19,7 @@ import javax.inject.Singleton
 
 @Singleton
 class DecoderDispatcher @Inject constructor(
-    @ApplicationContext private val appContext: Context,
+    @param:ApplicationContext private val appContext: Context,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     private val settings: SettingsRepository,
 ) {
