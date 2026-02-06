@@ -3,7 +3,7 @@ agp = "9.0.0"
 androidx-camera = "1.5.3"
 androidx-lifecycle = "2.10.0"
 hilt = "2.59.1"
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 
 [libraries]
 androidx-activity = "androidx.activity:activity:1.12.3"
