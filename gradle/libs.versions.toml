@@ -2,7 +2,7 @@
 agp = "9.0.1"
 androidx-camera = "1.5.3"
 androidx-lifecycle = "2.10.0"
-hilt = "2.59.1"
+hilt = "2.59.2"
 kotlin = "2.3.10"
 
 [libraries]
