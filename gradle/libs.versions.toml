@@ -3,7 +3,6 @@ agp = "9.1.0"
 androidx-camera = "1.5.3"
 androidx-lifecycle = "2.10.0"
 hilt = "2.59.2"
-kotlin = "2.3.10"
 
 [libraries]
 androidx-activity = "androidx.activity:activity:1.12.4"
@@ -33,7 +32,7 @@ google-mlkit-barcode = "com.google.android.gms:play-services-mlkit-barcode-scann
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 junit = "junit:junit:4.13.2"
-kotlin-metadata = { module = "org.jetbrains.kotlin:kotlin-metadata-jvm", version.ref = "kotlin" }
+kotlin-metadata = "org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.10"
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android" }
