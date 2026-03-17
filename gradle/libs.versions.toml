@@ -32,7 +32,7 @@ google-mlkit-barcode = "com.google.android.gms:play-services-mlkit-barcode-scann
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 junit = "junit:junit:4.13.2"
-kotlin-metadata = "org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.10"
+kotlin-metadata = "org.jetbrains.kotlin:kotlin-metadata-jvm:2.3.20"
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android" }
