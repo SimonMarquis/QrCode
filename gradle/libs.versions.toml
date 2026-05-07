@@ -1,6 +1,6 @@
 [versions]
 agp = "9.2.1"
-androidx-camera = "1.6.0"
+androidx-camera = "1.6.1"
 androidx-lifecycle = "2.10.0"
 hilt = "2.59.2"
 
