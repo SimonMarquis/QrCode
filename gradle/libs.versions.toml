@@ -49,4 +49,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 google-ksp = { id = "com.google.devtools.ksp", version = "2.3.9" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-google-playServices = { id = "com.google.gms.google-services", version = "4.4.4" }
+google-playServices = { id = "com.google.gms.google-services", version = "4.5.0" }
