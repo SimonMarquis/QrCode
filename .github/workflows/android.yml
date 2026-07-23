@@ -19,6 +19,11 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
+      - name: Debug secret length
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          echo "length=${#GOOGLE_SERVICES_JSON}"
       - name: Decode google-services.json
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
