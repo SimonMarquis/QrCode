@@ -9,7 +9,7 @@ plugins {
 }
 
 val versionMajor = 1
-val versionMinor = 8
+val versionMinor = 9
 val versionPatch = 0
 val versionBuild = 0
 
